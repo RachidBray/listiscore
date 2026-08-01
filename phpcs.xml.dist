@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruleset name="Listing Health Score">
+  <file>.</file>
+  <exclude-pattern>/vendor/*</exclude-pattern>
+  <exclude-pattern>/node_modules/*</exclude-pattern>
+  <arg name="extensions" value="php"/>
+  <arg name="cache" value=".phpcs-cache"/>
+  <rule ref="WordPress">
+    <exclude name="WordPress.Files.FileName"/>
+  </rule>
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array" value="listing-health-score"/>
+    </properties>
+  </rule>
+  <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+    <properties>
+      <property name="prefixes" type="array" value="lhs,LHS"/>
+    </properties>
+  </rule>
+  <rule ref="PHPCompatibilityWP"/>
+  <config name="testVersion" value="7.4-"/>
+</ruleset>

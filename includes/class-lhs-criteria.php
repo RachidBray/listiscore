@@ -104,7 +104,8 @@ class LHS_Criteria {
 		return apply_filters( 'lhs_criteria', $criteria );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Checks. Each receives ( $gd_post, $post_id ) and returns float 0..1.
 	 * ------------------------------------------------------------------- */
 
@@ -166,7 +167,7 @@ class LHS_Criteria {
 		$found = 0;
 		foreach ( $fields as $field ) {
 			if ( ! empty( $gd_post->{$field} ) ) {
-				$found++;
+				++$found;
 			}
 		}
 
