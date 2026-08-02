@@ -1,0 +1,357 @@
+<?php
+/**
+ * Listing Health Score widget.
+ *
+ * A single Super Duper class gives us a widget, the `[lhs_health]` shortcode,
+ * and a Gutenberg block for free.
+ *
+ * @package Listing_Health_Score
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * LHS_Widget_Health_Score class.
+ */
+class LHS_Widget_Health_Score extends WP_Super_Duper {
+
+	/**
+	 * Register this widget with GeoDirectory.
+	 *
+	 * Hooked to `geodir_get_widgets`; GD's own `widgets_init` callback takes
+	 * care of actually calling `register_widget()` on it.
+	 *
+	 * @param string[] $widgets Registered widget class names.
+	 * @return string[]
+	 */
+	public static function register( $widgets ) {
+		$widgets[] = __CLASS__;
+		return $widgets;
+	}
+
+	/**
+	 * Sets up the widget's name etc.
+	 */
+	public function __construct() {
+		$options = array(
+			'textdomain'     => 'listing-health-score',
+			'block-icon'     => 'fas fa-heartbeat',
+			'block-category' => 'geodirectory',
+			'block-keywords' => "['health','score','geodir','listing']",
+			'class_name'     => __CLASS__,
+			'base_id'        => 'lhs_health',
+			'name'           => __( 'GD > Listing Health Score', 'listing-health-score' ),
+			'widget_ops'     => array(
+				'classname'       => 'lhs-widget-health-score' . ( geodir_design_style() ? ' bsui' : '' ),
+				'description'     => esc_html__( 'Displays the listing health score, band, and recommendations.', 'listing-health-score' ),
+				'geodirectory'    => true,
+				'gd_wgt_showhide' => 'show_on',
+				'gd_wgt_restrict' => array( 'gd-detail' ),
+			),
+		);
+
+		parent::__construct( $options );
+	}
+
+	/**
+	 * Set widget arguments.
+	 *
+	 * @return array
+	 */
+	public function set_arguments() {
+		return array(
+			'title'                => array(
+				'title'    => __( 'Title:', 'listing-health-score' ),
+				'desc'     => __( 'Leave blank for no title.', 'listing-health-score' ),
+				'type'     => 'text',
+				'default'  => '',
+				'desc_tip' => true,
+				'advanced' => false,
+			),
+			'id'                   => array(
+				'title'       => __( 'Post ID:', 'listing-health-score' ),
+				'desc'        => __( 'Leave blank to use the current listing.', 'listing-health-score' ),
+				'type'        => 'number',
+				'placeholder' => __( 'Leave blank to use current post id.', 'listing-health-score' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'advanced'    => true,
+			),
+			'show_recommendations' => array(
+				'title'    => __( 'Show recommendations:', 'listing-health-score' ),
+				'desc'     => __( 'Show the list of tips sorted by potential point gain.', 'listing-health-score' ),
+				'type'     => 'checkbox',
+				'value'    => '1',
+				'default'  => 1,
+				'desc_tip' => true,
+				'advanced' => false,
+			),
+			'public'               => array(
+				'title'    => __( 'Show score publicly:', 'listing-health-score' ),
+				'desc'     => __( 'By default only the listing owner and admins can see the health score. Enable to show it to every visitor.', 'listing-health-score' ),
+				'type'     => 'checkbox',
+				'value'    => '1',
+				'default'  => 0,
+				'desc_tip' => true,
+				'advanced' => false,
+			),
+		);
+	}
+
+	/**
+	 * Outputs the health score on the front-end.
+	 *
+	 * @param array  $args        Widget arguments.
+	 * @param array  $widget_args Widget args (unused).
+	 * @param string $content     Shortcode content (unused).
+	 * @return string
+	 */
+	public function output( $args = array(), $widget_args = array(), $content = '' ) {
+		global $gd_post, $post;
+
+		$defaults = array(
+			'title'                => '',
+			'id'                   => '',
+			'show_recommendations' => 1,
+			'public'               => 0,
+		);
+		$args     = wp_parse_args( $args, $defaults );
+
+		$is_preview = $this->is_preview() || $this->is_block_content_call();
+
+		if ( ! empty( $args['id'] ) ) {
+			$post_id = absint( $args['id'] );
+		} elseif ( ! empty( $gd_post->ID ) ) {
+			$post_id = $gd_post->ID;
+		} elseif ( ! empty( $post->ID ) ) {
+			$post_id = $post->ID;
+		} else {
+			$post_id = 0;
+		}
+
+		if ( ! $post_id || ! LHS_Scorer::is_gd_listing( $post_id ) ) {
+			return $is_preview ? $this->preview_placeholder( __( 'No listing found to preview.', 'listing-health-score' ) ) : '';
+		}
+
+		if ( ! $is_preview && ! self::current_user_can_view( $post_id, ! empty( $args['public'] ) ) ) {
+			return '';
+		}
+
+		$score = LHS_Scorer::get_score( $post_id );
+		if ( false === $score ) {
+			return $is_preview ? $this->preview_placeholder( __( 'Not a scoreable listing.', 'listing-health-score' ) ) : '';
+		}
+
+		$band            = LHS_Scorer::get_band( $score );
+		$recommendations = ! empty( $args['show_recommendations'] ) ? LHS_Scorer::get_recommendations( $post_id ) : array();
+
+		ob_start();
+		$this->render( $score, $band, $recommendations, $args['title'] );
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the widget markup, branching on the active design style.
+	 *
+	 * @param int     $score           Score 0-100.
+	 * @param string  $band            good|ok|poor.
+	 * @param array[] $recommendations Tips from LHS_Scorer::get_recommendations().
+	 * @param string  $title           Optional widget title.
+	 */
+	private function render( $score, $band, $recommendations, $title ) {
+		$color = $this->band_color( $band );
+
+		if ( geodir_design_style() ) {
+			$this->render_aui( $score, $band, $color, $recommendations, $title );
+		} else {
+			$this->render_legacy( $score, $band, $color, $recommendations, $title );
+		}
+	}
+
+	/**
+	 * Render using AyeCode UI (Bootstrap) markup.
+	 *
+	 * @param int     $score           Score 0-100.
+	 * @param string  $band            good|ok|poor.
+	 * @param string  $color           Bootstrap contextual color (success|warning|danger).
+	 * @param array[] $recommendations Tips.
+	 * @param string  $title           Optional widget title.
+	 */
+	private function render_aui( $score, $band, $color, $recommendations, $title ) {
+		global $aui_bs5;
+
+		$me_1        = $aui_bs5 ? 'me-1' : 'mr-1';
+		$me_2        = $aui_bs5 ? 'me-2' : 'mr-2';
+		$badge_color = $aui_bs5 ? 'text-bg-' . $color : 'badge-' . $color;
+		?>
+		<div class="lhs-health-score">
+			<?php if ( $title ) : ?>
+				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
+			<?php endif; ?>
+			<div class="d-flex align-items-center mb-2">
+				<?php
+				$badge_args = array(
+					'content' => $score . '/100',
+					'class'   => 'badge ' . $badge_color . ' fs-6 ' . $me_2,
+				);
+				echo aui()->badge( $badge_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- aui()->badge() escapes its own output.
+				?>
+				<span class="text-muted text-capitalize"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
+			</div>
+			<div class="progress mb-3" style="height: 10px;">
+				<div
+					class="progress-bar bg-<?php echo esc_attr( $color ); ?>"
+					role="progressbar"
+					style="width: <?php echo esc_attr( $score ); ?>%;"
+					aria-valuenow="<?php echo esc_attr( $score ); ?>"
+					aria-valuemin="0"
+					aria-valuemax="100"
+				></div>
+			</div>
+			<?php if ( ! empty( $recommendations ) ) : ?>
+				<ul class="lhs-recommendations list-unstyled mb-0">
+					<?php foreach ( $recommendations as $tip ) : ?>
+						<li class="mb-1">
+							<i class="fas fa-arrow-up text-success <?php echo esc_attr( $me_1 ); ?>" aria-hidden="true"></i>
+							<?php echo esc_html( $tip['tip'] ); ?>
+							<span class="text-muted">
+								<?php
+								/* translators: %s: potential points gained, e.g. "3.5". */
+								echo esc_html( sprintf( __( '(+%s pts)', 'listing-health-score' ), $tip['potential_points'] ) );
+								?>
+							</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render using plain markup for sites not using AyeCode UI / Bootstrap.
+	 *
+	 * @param int     $score           Score 0-100.
+	 * @param string  $band            good|ok|poor.
+	 * @param string  $color           Hex color for the band.
+	 * @param array[] $recommendations Tips.
+	 * @param string  $title           Optional widget title.
+	 */
+	private function render_legacy( $score, $band, $color, $recommendations, $title ) {
+		$hex = $this->band_hex_color( $band );
+		?>
+		<div class="lhs-health-score lhs-health-score--legacy">
+			<?php if ( $title ) : ?>
+				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
+			<?php endif; ?>
+			<p>
+				<span class="lhs-badge lhs-badge--<?php echo esc_attr( $band ); ?>" style="background:<?php echo esc_attr( $hex ); ?>;">
+					<?php echo esc_html( $score ); ?>/100
+				</span>
+				<?php echo esc_html( $this->band_label( $band ) ); ?>
+			</p>
+			<div style="background:#eee;border-radius:4px;height:10px;overflow:hidden;">
+				<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;"></div>
+			</div>
+			<?php if ( ! empty( $recommendations ) ) : ?>
+				<ul>
+					<?php foreach ( $recommendations as $tip ) : ?>
+						<li>
+							<?php echo esc_html( $tip['tip'] ); ?>
+							(
+							<?php
+							/* translators: %s: potential points gained, e.g. "3.5". */
+							echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
+							?>
+							)
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Placeholder shown in the block editor / widget preview when there's
+	 * nothing real to render.
+	 *
+	 * @param string $message Message to show.
+	 * @return string
+	 */
+	private function preview_placeholder( $message ) {
+		return '<div class="lhs-health-score lhs-health-score--placeholder">' . esc_html( $message ) . '</div>';
+	}
+
+	/**
+	 * Whether the current user is allowed to see this listing's score.
+	 *
+	 * @param int  $post_id   Listing post ID.
+	 * @param bool $is_public Whether the widget instance is set to show publicly.
+	 * @return bool
+	 */
+	private static function current_user_can_view( $post_id, $is_public ) {
+		if ( $is_public || current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return false;
+		}
+
+		return (int) get_post_field( 'post_author', $post_id ) === $user_id;
+	}
+
+	/**
+	 * Bootstrap contextual color for a band.
+	 *
+	 * @param string $band good|ok|poor.
+	 * @return string success|warning|danger
+	 */
+	private function band_color( $band ) {
+		$colors = array(
+			'good' => 'success',
+			'ok'   => 'warning',
+			'poor' => 'danger',
+		);
+
+		return isset( $colors[ $band ] ) ? $colors[ $band ] : 'secondary';
+	}
+
+	/**
+	 * Hex color for a band, for sites not using AyeCode UI / Bootstrap.
+	 *
+	 * Matches the colors used by LHS_Admin_Column::badge_styles().
+	 *
+	 * @param string $band good|ok|poor.
+	 * @return string
+	 */
+	private function band_hex_color( $band ) {
+		$colors = array(
+			'good' => '#00a32a',
+			'ok'   => '#dba617',
+			'poor' => '#d63638',
+		);
+
+		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#666';
+	}
+
+	/**
+	 * Human readable label for a band.
+	 *
+	 * @param string $band good|ok|poor.
+	 * @return string
+	 */
+	private function band_label( $band ) {
+		$labels = array(
+			'good' => __( 'Good', 'listing-health-score' ),
+			'ok'   => __( 'Needs improvement', 'listing-health-score' ),
+			'poor' => __( 'Poor', 'listing-health-score' ),
+		);
+
+		return isset( $labels[ $band ] ) ? $labels[ $band ] : '';
+	}
+}

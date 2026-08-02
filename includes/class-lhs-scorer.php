@@ -5,17 +5,23 @@
  * Calculates a 0-100 score from the criteria registry, stores the total and
  * the per-criterion breakdown as post meta so dashboards never need to
  * recalculate on read.
+ *
+ * @package Listing_Health_Score
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * LHS_Scorer class.
+ */
 class LHS_Scorer {
 
-	const META_SCORE     = '_lhs_score';
-	const META_BREAKDOWN = '_lhs_breakdown';
-	const META_UPDATED   = '_lhs_calculated_at';
+	const META_SCORE            = '_lhs_score';
+	const META_BREAKDOWN        = '_lhs_breakdown';
+	const META_UPDATED          = '_lhs_calculated_at';
+	const META_SETTINGS_VERSION = '_lhs_settings_version';
 
 	/**
 	 * Calculate and persist the score for a listing.
@@ -75,6 +81,7 @@ class LHS_Scorer {
 		update_post_meta( $post_id, self::META_SCORE, $score );
 		update_post_meta( $post_id, self::META_BREAKDOWN, $breakdown );
 		update_post_meta( $post_id, self::META_UPDATED, time() );
+		update_post_meta( $post_id, self::META_SETTINGS_VERSION, LHS_Settings::get_version() );
 
 		/**
 		 * Fires after a listing score has been recalculated.
@@ -89,7 +96,8 @@ class LHS_Scorer {
 	}
 
 	/**
-	 * Get the stored score, calculating it lazily if missing.
+	 * Get the stored score, calculating it lazily if missing or if it was
+	 * calculated under settings that have since changed.
 	 *
 	 * @param int $post_id Listing post ID.
 	 * @return int|false
@@ -97,10 +105,22 @@ class LHS_Scorer {
 	public static function get_score( $post_id ) {
 		$score = get_post_meta( $post_id, self::META_SCORE, true );
 
-		if ( '' === $score ) {
+		if ( '' === $score || self::is_stale( $post_id ) ) {
 			return self::calculate( $post_id );
 		}
 		return (int) $score;
+	}
+
+	/**
+	 * Whether a listing's stored score was calculated under an older
+	 * version of the Health Score settings.
+	 *
+	 * @param int $post_id Listing post ID.
+	 * @return bool
+	 */
+	public static function is_stale( $post_id ) {
+		$stored_version = get_post_meta( $post_id, self::META_SETTINGS_VERSION, true );
+		return LHS_Settings::get_version() !== (int) $stored_version;
 	}
 
 	/**
@@ -166,10 +186,24 @@ class LHS_Scorer {
 	 * @return string good|ok|poor
 	 */
 	public static function get_band( $score ) {
-		if ( $score >= 80 ) {
+		/**
+		 * Filter the "good" band threshold.
+		 *
+		 * @param int $threshold Minimum score for the "good" band.
+		 */
+		$good = (int) apply_filters( 'lhs_band_good_threshold', 80 );
+
+		/**
+		 * Filter the "ok" band threshold.
+		 *
+		 * @param int $threshold Minimum score for the "ok" band.
+		 */
+		$ok = (int) apply_filters( 'lhs_band_ok_threshold', 50 );
+
+		if ( $score >= $good ) {
 			return 'good';
 		}
-		if ( $score >= 50 ) {
+		if ( $score >= $ok ) {
 			return 'ok';
 		}
 		return 'poor';

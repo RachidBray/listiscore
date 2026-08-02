@@ -6,21 +6,64 @@
  * optional tip shown to listing owners when the fraction is below 1.
  *
  * Third parties can add/remove/reweight criteria via the `lhs_criteria` filter.
+ *
+ * @package Listing_Health_Score
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * LHS_Criteria class.
+ */
 class LHS_Criteria {
 
 	/**
-	 * Get all registered criteria.
+	 * Get all registered criteria with saved settings overrides applied.
 	 *
-	 * @param object $gd_post GeoDirectory post object from geodir_get_post_info().
+	 * Criteria disabled via settings are omitted entirely; enabled ones have
+	 * their weight replaced with the saved override, if any.
+	 *
 	 * @return array[] Each item: label, weight (int), check (callable), tip (string).
 	 */
 	public static function get_all() {
+		$criteria  = self::get_defaults();
+		$overrides = LHS_Settings::get( 'criteria', array() );
+
+		foreach ( array_keys( $criteria ) as $id ) {
+			if ( empty( $overrides[ $id ] ) ) {
+				continue;
+			}
+
+			if ( isset( $overrides[ $id ]['enabled'] ) && ! $overrides[ $id ]['enabled'] ) {
+				unset( $criteria[ $id ] );
+				continue;
+			}
+
+			if ( isset( $overrides[ $id ]['weight'] ) ) {
+				$criteria[ $id ]['weight'] = max( 0, (int) $overrides[ $id ]['weight'] );
+			}
+		}
+
+		/**
+		 * Filter the health score criteria.
+		 *
+		 * @param array[] $criteria Criteria definitions keyed by id.
+		 */
+		return apply_filters( 'lhs_criteria', $criteria );
+	}
+
+	/**
+	 * Get the built-in criteria defaults, with no settings overrides applied.
+	 *
+	 * Used by the scoring merge above and by the settings page, which needs
+	 * to list every criterion (including disabled ones) so they can be
+	 * re-enabled.
+	 *
+	 * @return array[] Each item: label, weight (int), check (callable), tip (string).
+	 */
+	public static function get_defaults() {
 		$criteria = array(
 			'featured_image' => array(
 				'label'  => __( 'Featured image', 'listing-health-score' ),
@@ -96,19 +139,18 @@ class LHS_Criteria {
 			),
 		);
 
-		/**
-		 * Filter the health score criteria.
-		 *
-		 * @param array[] $criteria Criteria definitions keyed by id.
-		 */
-		return apply_filters( 'lhs_criteria', $criteria );
+		return $criteria;
 	}
 
-	/*
-	---------------------------------------------------------------------
-	 * Checks. Each receives ( $gd_post, $post_id ) and returns float 0..1.
-	 * ------------------------------------------------------------------- */
+	// Checks. Each receives ( $gd_post, $post_id ) and returns float 0..1.
 
+	/**
+	 * Check for a featured image.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_featured_image( $gd_post, $post_id ) {
 		if ( ! empty( $gd_post->featured_image ) || has_post_thumbnail( $post_id ) ) {
 			return 1.0;
@@ -116,6 +158,13 @@ class LHS_Criteria {
 		return 0.0;
 	}
 
+	/**
+	 * Check for a business logo.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_logo( $gd_post, $post_id ) {
 		if ( ! empty( $gd_post->logo ) ) {
 			return 1.0;
@@ -130,6 +179,13 @@ class LHS_Criteria {
 		return 0.0;
 	}
 
+	/**
+	 * Check description length against the target.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_description( $gd_post, $post_id ) {
 		$content = get_post_field( 'post_content', $post_id );
 		$length  = mb_strlen( trim( wp_strip_all_tags( $content ) ) );
@@ -142,23 +198,53 @@ class LHS_Criteria {
 		return min( 1.0, $length / $target );
 	}
 
-	public static function check_business_hours( $gd_post, $post_id ) {
+	/**
+	 * Check for opening hours.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_business_hours( $gd_post ) {
 		return ! empty( $gd_post->business_hours ) ? 1.0 : 0.0;
 	}
 
-	public static function check_phone( $gd_post, $post_id ) {
+	/**
+	 * Check for a phone number.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_phone( $gd_post ) {
 		return ! empty( $gd_post->phone ) ? 1.0 : 0.0;
 	}
 
-	public static function check_email( $gd_post, $post_id ) {
+	/**
+	 * Check for a valid email address.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_email( $gd_post ) {
 		return ( ! empty( $gd_post->email ) && is_email( $gd_post->email ) ) ? 1.0 : 0.0;
 	}
 
-	public static function check_website( $gd_post, $post_id ) {
+	/**
+	 * Check for a website URL.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_website( $gd_post ) {
 		return ! empty( $gd_post->website ) ? 1.0 : 0.0;
 	}
 
-	public static function check_social( $gd_post, $post_id ) {
+	/**
+	 * Check social profile links against the target count.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_social( $gd_post ) {
 		$fields = apply_filters(
 			'lhs_social_fields',
 			array( 'facebook', 'instagram', 'twitter', 'x', 'linkedin', 'youtube', 'tiktok', 'pinterest' )
@@ -175,6 +261,13 @@ class LHS_Criteria {
 		return min( 1.0, $found / max( 1, $target ) );
 	}
 
+	/**
+	 * Check photo gallery count against the target.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_photos( $gd_post, $post_id ) {
 		$count = 0;
 
@@ -190,6 +283,13 @@ class LHS_Criteria {
 		return min( 1.0, $count / max( 1, $target ) );
 	}
 
+	/**
+	 * Check review count against the target.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_reviews( $gd_post, $post_id ) {
 		$count = (int) get_comments_number( $post_id );
 
@@ -197,7 +297,13 @@ class LHS_Criteria {
 		return min( 1.0, $count / max( 1, $target ) );
 	}
 
-	public static function check_claimed( $gd_post, $post_id ) {
+	/**
+	 * Check whether the listing has been claimed.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @return float
+	 */
+	public static function check_claimed( $gd_post ) {
 		// GeoDirectory Claim Listing addon stores this on the detail table.
 		if ( isset( $gd_post->claimed ) ) {
 			return ! empty( $gd_post->claimed ) ? 1.0 : 0.0;
@@ -207,6 +313,13 @@ class LHS_Criteria {
 		return 1.0;
 	}
 
+	/**
+	 * Check freshness, decaying linearly from the last modified date.
+	 *
+	 * @param object $gd_post GeoDirectory post object.
+	 * @param int    $post_id Listing post ID.
+	 * @return float
+	 */
 	public static function check_freshness( $gd_post, $post_id ) {
 		$modified = get_post_field( 'post_modified_gmt', $post_id );
 		if ( ! $modified ) {

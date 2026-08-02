@@ -10,13 +10,22 @@
   </rule>
   <rule ref="WordPress.WP.I18n">
     <properties>
-      <property name="text_domain" type="array" value="listing-health-score"/>
+      <property name="text_domain" type="array">
+        <element value="listing-health-score"/>
+      </property>
     </properties>
   </rule>
   <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
     <properties>
-      <property name="prefixes" type="array" value="lhs,LHS"/>
+      <property name="prefixes" type="array">
+        <element value="lhs"/>
+        <element value="LHS"/>
+      </property>
     </properties>
+    <!-- "lhs"/"LHS" is the plugin's deliberate, documented prefix (see AGENTS.md); it's
+         one character under the sniff's generic 4-char minimum but is otherwise unique
+         within this WordPress install (grepped: no collisions with core or other addons). -->
+    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
   </rule>
   <rule ref="PHPCompatibilityWP"/>
   <config name="testVersion" value="7.4-"/>
