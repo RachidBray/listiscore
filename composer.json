@@ -3,11 +3,15 @@
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.0",
     "phpcompatibility/phpcompatibility-wp": "^2.1",
-    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpunit/phpunit": "^9",
+    "brain/monkey": "^2.6",
+    "mockery/mockery": "^1.6"
   },
   "scripts": {
     "lint": "phpcs",
-    "lint:fix": "phpcbf"
+    "lint:fix": "phpcbf",
+    "test": "phpunit"
   },
   "config": {
     "allow-plugins": {
