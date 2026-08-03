@@ -195,16 +195,16 @@ class ScorerTest extends LHS_TestCase {
 
 		$this->assertCount( 3, $tips );
 
-		// c: (10-0)/70*100 = 14.3.
+		// c: (10-0)/70*100 = 14.29, rounded to a whole number.
 		$this->assertSame( 'c', $tips[0]['id'] );
-		$this->assertSame( 14.3, $tips[0]['potential_percentage'] );
+		$this->assertSame( 14, $tips[0]['potential_percentage'] );
 
-		// b: (20-15)/70*100 = 7.1.
+		// b: (20-15)/70*100 = 7.14, rounded to a whole number.
 		$this->assertSame( 'b', $tips[1]['id'] );
-		$this->assertSame( 7.1, $tips[1]['potential_percentage'] );
+		$this->assertSame( 7, $tips[1]['potential_percentage'] );
 
-		// d: (30-27)/70*100 = 4.3.
+		// d: (30-27)/70*100 = 4.29, rounded to a whole number.
 		$this->assertSame( 'd', $tips[2]['id'] );
-		$this->assertSame( 4.3, $tips[2]['potential_percentage'] );
+		$this->assertSame( 4, $tips[2]['potential_percentage'] );
 	}
 }

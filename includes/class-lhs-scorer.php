@@ -167,7 +167,9 @@ class LHS_Scorer {
 				'id'                   => $id,
 				'label'                => $item['label'],
 				'tip'                  => $item['tip'],
-				'potential_percentage' => round( $percentage, 1 ),
+				// A whole number, matching the score's own 0-100 precision — a
+				// decimal (11.8%) reads as noise, not as a more accurate answer.
+				'potential_percentage' => (int) round( $percentage ),
 			);
 		}
 

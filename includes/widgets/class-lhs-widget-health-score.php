@@ -228,8 +228,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							</span>
 							<span class="badge fw-normal" style="background-color: #f0efec; color: #666;">
 								<?php
-								/* translators: %s: potential score percentage gained, e.g. "3.5". */
-								echo esc_html( sprintf( __( '+%s%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								/* translators: %d: potential score percentage gained, e.g. "12". */
+								echo esc_html( sprintf( __( '%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</li>
@@ -289,8 +289,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							</span>
 							<span style="background:#f0efec;color:#666;border-radius:999px;padding:1px 8px;font-size:0.85em;white-space:nowrap;">
 								<?php
-								/* translators: %s: potential score percentage gained, e.g. "3.5". */
-								echo esc_html( sprintf( __( '+%s%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								/* translators: %d: potential score percentage gained, e.g. "12". */
+								echo esc_html( sprintf( __( '%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</li>
