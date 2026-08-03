@@ -11,6 +11,10 @@
  * @package Listing_Health_Score
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'wp_parse_args' ) ) {
 	/**
 	 * Minimal real implementation of WP's array/object argument merger.

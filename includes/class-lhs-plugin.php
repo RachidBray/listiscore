@@ -34,8 +34,6 @@ final class LHS_Plugin {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 
-			add_action( 'plugins_loaded', array( self::$instance, 'load_textdomain' ) );
-
 			// Belt and suspenders: `geodirectory_loaded` only fires once GD
 			// core exists, but guard here too in case anything ever calls
 			// this directly.
@@ -54,19 +52,6 @@ final class LHS_Plugin {
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Loads the plugin language files.
-	 *
-	 * @since 0.2.0
-	 */
-	public function load_textdomain() {
-		$locale = apply_filters( 'plugin_locale', determine_locale(), 'listing-health-score' );
-
-		unload_textdomain( 'listing-health-score' );
-		load_textdomain( 'listing-health-score', WP_LANG_DIR . '/listing-health-score/listing-health-score-' . $locale . '.mo' );
-		load_plugin_textdomain( 'listing-health-score', false, basename( LHS_DIR ) . '/languages/' );
 	}
 
 	/**

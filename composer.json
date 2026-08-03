@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "phpcs",
     "lint:fix": "phpcbf",
-    "test": "phpunit"
+    "test": "phpunit",
+    "build": "bash bin/build.sh"
   },
   "config": {
     "allow-plugins": {

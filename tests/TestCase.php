@@ -8,6 +8,10 @@
  * @package Listing_Health_Score
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 
 /**

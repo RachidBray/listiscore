@@ -5,6 +5,10 @@
  * @package Listing_Health_Score
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use Brain\Monkey\Functions;
 
 /**
