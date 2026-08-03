@@ -185,6 +185,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 		$me_1        = $aui_bs5 ? 'me-1' : 'mr-1';
 		$me_2        = $aui_bs5 ? 'me-2' : 'mr-2';
 		$badge_color = $aui_bs5 ? 'text-bg-' . $color : 'badge-' . $color;
+		$track_color = $this->band_track_color( $band );
 		?>
 		<div class="lhs-health-score">
 			<?php if ( $title ) : ?>
@@ -200,7 +201,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				?>
 				<span class="text-muted text-capitalize"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
 			</div>
-			<div class="progress mb-3" style="height: 10px;">
+			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. */ ?>
+			<div class="progress mb-3" style="height: 12px; background-color: <?php echo esc_attr( $track_color ); ?>;">
 				<div
 					class="progress-bar bg-<?php echo esc_attr( $color ); ?>"
 					role="progressbar"
@@ -213,13 +215,15 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			<?php if ( ! empty( $recommendations ) ) : ?>
 				<ul class="lhs-recommendations list-unstyled mb-0">
 					<?php foreach ( $recommendations as $tip ) : ?>
-						<li class="mb-1">
-							<i class="fas fa-arrow-up text-success <?php echo esc_attr( $me_1 ); ?>" aria-hidden="true"></i>
-							<?php echo esc_html( $tip['tip'] ); ?>
-							<span class="text-muted">
+						<li class="d-flex align-items-center justify-content-between mb-2">
+							<span>
+								<i class="fas fa-arrow-up text-success <?php echo esc_attr( $me_1 ); ?>" aria-hidden="true"></i>
+								<?php echo esc_html( $tip['tip'] ); ?>
+							</span>
+							<span class="badge <?php echo esc_attr( $aui_bs5 ? 'text-bg-light' : 'badge-light' ); ?> text-muted fw-normal">
 								<?php
 								/* translators: %s: potential points gained, e.g. "3.5". */
-								echo esc_html( sprintf( __( '(+%s pts)', 'listing-health-score' ), $tip['potential_points'] ) );
+								echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
 								?>
 							</span>
 						</li>
@@ -240,32 +244,46 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 * @param string  $title           Optional widget title.
 	 */
 	private function render_legacy( $score, $band, $color, $recommendations, $title ) {
-		$hex = $this->band_hex_color( $band );
+		$hex   = $this->band_hex_color( $band );
+		$track = $this->band_track_color( $band );
 		?>
 		<div class="lhs-health-score lhs-health-score--legacy">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
-			<p>
-				<span class="lhs-badge lhs-badge--<?php echo esc_attr( $band ); ?>" style="background:<?php echo esc_attr( $hex ); ?>;">
+			<p style="display:flex;align-items:center;gap:8px;">
+				<span
+					class="lhs-badge lhs-badge--<?php echo esc_attr( $band ); ?>"
+					style="background:<?php echo esc_attr( $hex ); ?>;color:<?php echo esc_attr( $this->band_badge_text_color( $band ) ); ?>;border-radius:999px;padding:2px 10px;font-weight:600;"
+				>
 					<?php echo esc_html( $score ); ?>/100
 				</span>
-				<?php echo esc_html( $this->band_label( $band ) ); ?>
+				<span style="color:#666;"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
 			</p>
-			<div style="background:#eee;border-radius:4px;height:10px;overflow:hidden;">
-				<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;"></div>
+			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. */ ?>
+			<div
+				role="progressbar"
+				aria-valuenow="<?php echo esc_attr( $score ); ?>"
+				aria-valuemin="0"
+				aria-valuemax="100"
+				style="background:<?php echo esc_attr( $track ); ?>;border-radius:999px;height:12px;overflow:hidden;margin-bottom:12px;"
+			>
+				<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;border-radius:999px;"></div>
 			</div>
 			<?php if ( ! empty( $recommendations ) ) : ?>
-				<ul>
+				<ul style="list-style:none;margin:0;padding:0;">
 					<?php foreach ( $recommendations as $tip ) : ?>
-						<li>
-							<?php echo esc_html( $tip['tip'] ); ?>
-							(
-							<?php
-							/* translators: %s: potential points gained, e.g. "3.5". */
-							echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
-							?>
-							)
+						<li style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0;">
+							<span>
+								<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0ca30c;margin-right:6px;"></span>
+								<?php echo esc_html( $tip['tip'] ); ?>
+							</span>
+							<span style="background:#f0efec;color:#666;border-radius:999px;padding:1px 8px;font-size:0.85em;white-space:nowrap;">
+								<?php
+								/* translators: %s: potential points gained, e.g. "3.5". */
+								echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
+								?>
+							</span>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -324,19 +342,62 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	/**
 	 * Hex color for a band, for sites not using AyeCode UI / Bootstrap.
 	 *
-	 * Matches the colors used by LHS_Admin_Column::badge_styles().
+	 * A validated good/warning/critical status palette — status colors are
+	 * always paired with the text label from band_label(), never used alone,
+	 * since warning/critical don't clear 3:1 contrast on a light surface by
+	 * themselves.
 	 *
 	 * @param string $band good|ok|poor.
 	 * @return string
 	 */
 	private function band_hex_color( $band ) {
 		$colors = array(
-			'good' => '#00a32a',
-			'ok'   => '#dba617',
-			'poor' => '#d63638',
+			'good' => '#0ca30c',
+			'ok'   => '#fab219',
+			'poor' => '#d03b3b',
 		);
 
 		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#666';
+	}
+
+	/**
+	 * Legible text color for the score badge's colored background.
+	 *
+	 * Computed from actual contrast ratios against each status hex (not
+	 * assumed): white fails badly on the amber "ok" background (1.83:1) and
+	 * is marginal on green (3.35:1), so those two get dark ink; red tests
+	 * better with white (4.80:1) than dark (4.10:1).
+	 *
+	 * @param string $band good|ok|poor.
+	 * @return string
+	 */
+	private function band_badge_text_color( $band ) {
+		$colors = array(
+			'good' => '#0b0b0b',
+			'ok'   => '#0b0b0b',
+			'poor' => '#ffffff',
+		);
+
+		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#0b0b0b';
+	}
+
+	/**
+	 * Track (unfilled) color for a band's progress meter.
+	 *
+	 * A lighter step of the fill's own hue, not a neutral gray, so the band
+	 * still reads across the whole bar rather than just the filled portion.
+	 *
+	 * @param string $band good|ok|poor.
+	 * @return string
+	 */
+	private function band_track_color( $band ) {
+		$colors = array(
+			'good' => '#dbf1db',
+			'ok'   => '#fef3dc',
+			'poor' => '#f8e2e2',
+		);
+
+		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#eee';
 	}
 
 	/**

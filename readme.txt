@@ -4,7 +4,7 @@ Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.6.0
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,11 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 3. The owner-facing widget showing a listing's score, band, and prioritized recommendations.
 
 == Changelog ==
+
+= 0.6.1 =
+* Owner-facing widget: score meter's unfilled track is now a lighter tint of its own band color instead of neutral gray, so the band reads across the whole bar - CHANGED
+* Owner-facing widget: switched the legacy (non-AyeCode UI) band colors to a validated, accessible status palette, with per-band text color chosen from measured contrast rather than a fixed white - CHANGED
+* Owner-facing widget: recommendations list now shows the point-gain as a trailing pill instead of inline parenthetical text, for clearer visual hierarchy - CHANGED
 
 = 0.6.0 =
 * Admin health-band filter dropdown on listing type list tables - ADDED

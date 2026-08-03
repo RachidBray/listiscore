@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-03T14:21:26+00:00\n"
+"POT-Creation-Date: 2026-08-03T17:50:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: listing-health-score\n"
@@ -156,17 +156,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: includes/class-lhs-admin-list-table.php:197
-#: includes/widgets/class-lhs-widget-health-score.php:350
+#: includes/widgets/class-lhs-widget-health-score.php:411
 msgid "Good"
 msgstr ""
 
 #: includes/class-lhs-admin-list-table.php:198
-#: includes/widgets/class-lhs-widget-health-score.php:351
+#: includes/widgets/class-lhs-widget-health-score.php:412
 msgid "Needs improvement"
 msgstr ""
 
 #: includes/class-lhs-admin-list-table.php:199
-#: includes/widgets/class-lhs-widget-health-score.php:352
+#: includes/widgets/class-lhs-widget-health-score.php:413
 msgid "Poor"
 msgstr ""
 
@@ -319,13 +319,8 @@ msgid "Not a scoreable listing."
 msgstr ""
 
 #. translators: %s: potential points gained, e.g. "3.5".
-#: includes/widgets/class-lhs-widget-health-score.php:222
-#, php-format
-msgid "(+%s pts)"
-msgstr ""
-
-#. translators: %s: potential points gained, e.g. "3.5".
-#: includes/widgets/class-lhs-widget-health-score.php:266
+#: includes/widgets/class-lhs-widget-health-score.php:226
+#: includes/widgets/class-lhs-widget-health-score.php:284
 #, php-format
 msgid "+%s pts"
 msgstr ""
