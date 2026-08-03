@@ -46,6 +46,10 @@ final class LHS_Plugin {
 			self::$instance->includes();
 			self::$instance->init_hooks();
 
+			/**
+			 * Fires once the plugin has finished loading its includes and
+			 * registering its hooks.
+			 */
 			do_action( 'lhs_loaded' );
 		}
 

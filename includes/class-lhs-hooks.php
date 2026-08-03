@@ -129,6 +129,11 @@ class LHS_Hooks {
 	 * (freshness) decay properly without needing a save event.
 	 */
 	public static function daily_batch() {
+		/**
+		 * Filter how many listings are recalculated per daily cron run.
+		 *
+		 * @param int $batch_size Number of listings per batch. Default 200.
+		 */
 		$batch_size = (int) apply_filters( 'lhs_daily_batch_size', 200 );
 
 		$query = new WP_Query(

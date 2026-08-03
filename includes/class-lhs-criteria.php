@@ -190,6 +190,11 @@ class LHS_Criteria {
 		$content = get_post_field( 'post_content', $post_id );
 		$length  = mb_strlen( trim( wp_strip_all_tags( $content ) ) );
 
+		/**
+		 * Filter the description character count that earns full credit.
+		 *
+		 * @param int $target Target character count. Default 300.
+		 */
 		$target = (int) apply_filters( 'lhs_description_target_length', 300 );
 
 		if ( $length <= 0 ) {
@@ -245,6 +250,11 @@ class LHS_Criteria {
 	 * @return float
 	 */
 	public static function check_social( $gd_post ) {
+		/**
+		 * Filter which GD post object properties count as social profiles.
+		 *
+		 * @param string[] $fields Property names to check on the GD post object.
+		 */
 		$fields = apply_filters(
 			'lhs_social_fields',
 			array( 'facebook', 'instagram', 'twitter', 'x', 'linkedin', 'youtube', 'tiktok', 'pinterest' )
@@ -257,6 +267,11 @@ class LHS_Criteria {
 			}
 		}
 
+		/**
+		 * Filter the number of linked social profiles that earns full credit.
+		 *
+		 * @param int $target Target profile count. Default 2.
+		 */
 		$target = (int) apply_filters( 'lhs_social_target_count', 2 );
 		return min( 1.0, $found / max( 1, $target ) );
 	}
@@ -279,6 +294,11 @@ class LHS_Criteria {
 			$count  = is_array( $images ) ? count( $images ) : 0;
 		}
 
+		/**
+		 * Filter the photo count that earns full credit.
+		 *
+		 * @param int $target Target photo count. Default 5.
+		 */
 		$target = (int) apply_filters( 'lhs_photos_target_count', 5 );
 		return min( 1.0, $count / max( 1, $target ) );
 	}
@@ -293,6 +313,11 @@ class LHS_Criteria {
 	public static function check_reviews( $gd_post, $post_id ) {
 		$count = (int) get_comments_number( $post_id );
 
+		/**
+		 * Filter the review count that earns full credit.
+		 *
+		 * @param int $target Target review count. Default 3.
+		 */
 		$target = (int) apply_filters( 'lhs_reviews_target_count', 3 );
 		return min( 1.0, $count / max( 1, $target ) );
 	}
@@ -327,6 +352,11 @@ class LHS_Criteria {
 		}
 
 		$days_old = ( time() - strtotime( $modified . ' UTC' ) ) / DAY_IN_SECONDS;
+		/**
+		 * Filter the days since last update after which freshness decays to zero.
+		 *
+		 * @param int $max_days Max days before full decay. Default 180.
+		 */
 		$max_days = (int) apply_filters( 'lhs_freshness_max_days', 180 );
 
 		if ( $days_old <= 0 ) {
