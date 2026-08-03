@@ -68,6 +68,7 @@ final class LHS_Plugin {
 
 		if ( is_admin() ) {
 			require_once LHS_DIR . 'includes/class-lhs-admin-column.php';
+			require_once LHS_DIR . 'includes/class-lhs-admin-list-table.php';
 			require_once LHS_DIR . 'includes/class-lhs-admin-settings.php';
 		}
 	}
@@ -84,6 +85,7 @@ final class LHS_Plugin {
 
 		if ( is_admin() ) {
 			LHS_Admin_Column::init();
+			LHS_Admin_List_Table::init();
 			LHS_Admin_Settings::init();
 		}
 	}
