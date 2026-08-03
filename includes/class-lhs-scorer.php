@@ -135,31 +135,46 @@ class LHS_Scorer {
 	}
 
 	/**
-	 * Get actionable tips sorted by potential point gain (biggest wins first).
+	 * Get actionable tips sorted by potential score gain (biggest wins first).
+	 *
+	 * Expressed as a percentage of the overall 0-100 score, not raw weight
+	 * units — those aren't the same thing once criteria are disabled or
+	 * reweighted away from the 100-point default (the score itself is
+	 * always normalized against the current total weight; see calculate()).
 	 *
 	 * @param int $post_id Listing post ID.
-	 * @return array[] Each item: label, tip, potential_points.
+	 * @return array[] Each item: label, tip, potential_percentage.
 	 */
 	public static function get_recommendations( $post_id ) {
 		$breakdown = self::get_breakdown( $post_id );
-		$tips      = array();
+
+		$total_weight = 0;
+		foreach ( $breakdown as $item ) {
+			$total_weight += (int) $item['weight'];
+		}
+
+		$tips = array();
 
 		foreach ( $breakdown as $id => $item ) {
 			if ( empty( $item['tip'] ) ) {
 				continue;
 			}
+
+			$potential_points = $item['weight'] - $item['points'];
+			$percentage       = $total_weight > 0 ? ( $potential_points / $total_weight ) * 100 : 0.0;
+
 			$tips[] = array(
-				'id'               => $id,
-				'label'            => $item['label'],
-				'tip'              => $item['tip'],
-				'potential_points' => round( $item['weight'] - $item['points'], 1 ),
+				'id'                   => $id,
+				'label'                => $item['label'],
+				'tip'                  => $item['tip'],
+				'potential_percentage' => round( $percentage, 1 ),
 			);
 		}
 
 		usort(
 			$tips,
 			function ( $a, $b ) {
-				return $b['potential_points'] <=> $a['potential_points'];
+				return $b['potential_percentage'] <=> $a['potential_percentage'];
 			}
 		);
 

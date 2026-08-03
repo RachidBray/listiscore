@@ -152,9 +152,12 @@ class ScorerTest extends LHS_TestCase {
 
 	/**
 	 * Only criteria with a non-empty tip (i.e. not fully met) produce a
-	 * recommendation, and they're sorted by potential point gain descending.
+	 * recommendation, and they're sorted by potential score percentage
+	 * gain descending. The mock weights (10+20+10+30=70) deliberately
+	 * don't sum to 100, to prove the percentage is computed against the
+	 * actual total weight rather than just relabeling raw points.
 	 */
-	public function test_get_recommendations_only_incomplete_sorted_by_potential_points() {
+	public function test_get_recommendations_only_incomplete_sorted_by_potential_percentage() {
 		Functions\when( 'get_post_meta' )->justReturn(
 			array(
 				'a' => array(
@@ -192,13 +195,16 @@ class ScorerTest extends LHS_TestCase {
 
 		$this->assertCount( 3, $tips );
 
+		// c: (10-0)/70*100 = 14.3.
 		$this->assertSame( 'c', $tips[0]['id'] );
-		$this->assertSame( 10.0, $tips[0]['potential_points'] );
+		$this->assertSame( 14.3, $tips[0]['potential_percentage'] );
 
+		// b: (20-15)/70*100 = 7.1.
 		$this->assertSame( 'b', $tips[1]['id'] );
-		$this->assertSame( 5.0, $tips[1]['potential_points'] );
+		$this->assertSame( 7.1, $tips[1]['potential_percentage'] );
 
+		// d: (30-27)/70*100 = 4.3.
 		$this->assertSame( 'd', $tips[2]['id'] );
-		$this->assertSame( 3.0, $tips[2]['potential_points'] );
+		$this->assertSame( 4.3, $tips[2]['potential_percentage'] );
 	}
 }

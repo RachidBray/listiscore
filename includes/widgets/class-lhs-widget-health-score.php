@@ -201,8 +201,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				?>
 				<span class="text-muted text-capitalize"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
 			</div>
-			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. */ ?>
-			<div class="progress mb-3" style="height: 12px; background-color: <?php echo esc_attr( $track_color ); ?>;">
+			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. The percentage label is centered across the full bar (not just the fill) so it's never clipped by a small fill at low scores; dark ink reads clearly against both the pale track and every band's fill color. */ ?>
+			<div class="progress mb-3" style="height: 18px; background-color: <?php echo esc_attr( $track_color ); ?>; position: relative;">
 				<div
 					class="progress-bar bg-<?php echo esc_attr( $color ); ?>"
 					role="progressbar"
@@ -211,6 +211,12 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
+				<span
+					class="small fw-semibold"
+					style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #0b0b0b; line-height: 1;"
+				>
+					<?php echo esc_html( $score ); ?>%
+				</span>
 			</div>
 			<?php if ( ! empty( $recommendations ) ) : ?>
 				<ul class="lhs-recommendations list-unstyled mb-0">
@@ -222,8 +228,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							</span>
 							<span class="badge fw-normal" style="background-color: #f0efec; color: #666;">
 								<?php
-								/* translators: %s: potential points gained, e.g. "3.5". */
-								echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
+								/* translators: %s: potential score percentage gained, e.g. "3.5". */
+								echo esc_html( sprintf( __( '+%s%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</li>
@@ -260,15 +266,18 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				</span>
 				<span style="color:#666;"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
 			</p>
-			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. */ ?>
+			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. The percentage label is centered across the full bar (not just the fill) so it's never clipped by a small fill at low scores; dark ink reads clearly against both the pale track and every band's fill color. */ ?>
 			<div
 				role="progressbar"
 				aria-valuenow="<?php echo esc_attr( $score ); ?>"
 				aria-valuemin="0"
 				aria-valuemax="100"
-				style="background:<?php echo esc_attr( $track ); ?>;border-radius:999px;height:12px;overflow:hidden;margin-bottom:12px;"
+				style="background:<?php echo esc_attr( $track ); ?>;border-radius:999px;height:18px;overflow:hidden;margin-bottom:12px;position:relative;"
 			>
 				<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;border-radius:999px;"></div>
+				<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#0b0b0b;font-size:0.8em;font-weight:600;line-height:1;">
+					<?php echo esc_html( $score ); ?>%
+				</span>
 			</div>
 			<?php if ( ! empty( $recommendations ) ) : ?>
 				<ul style="list-style:none;margin:0;padding:0;">
@@ -280,8 +289,8 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							</span>
 							<span style="background:#f0efec;color:#666;border-radius:999px;padding:1px 8px;font-size:0.85em;white-space:nowrap;">
 								<?php
-								/* translators: %s: potential points gained, e.g. "3.5". */
-								echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
+								/* translators: %s: potential score percentage gained, e.g. "3.5". */
+								echo esc_html( sprintf( __( '+%s%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</li>
