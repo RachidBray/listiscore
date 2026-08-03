@@ -220,7 +220,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 								<i class="fas fa-arrow-up text-success <?php echo esc_attr( $me_1 ); ?>" aria-hidden="true"></i>
 								<?php echo esc_html( $tip['tip'] ); ?>
 							</span>
-							<span class="badge <?php echo esc_attr( $aui_bs5 ? 'text-bg-light' : 'badge-light' ); ?> text-muted fw-normal">
+							<span class="badge fw-normal" style="background-color: #f0efec; color: #666;">
 								<?php
 								/* translators: %s: potential points gained, e.g. "3.5". */
 								echo esc_html( sprintf( __( '+%s pts', 'listing-health-score' ), $tip['potential_points'] ) );
