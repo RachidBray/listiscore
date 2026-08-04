@@ -162,14 +162,22 @@ class LHS_Scorer {
 
 			$potential_points = $item['weight'] - $item['points'];
 			$percentage       = $total_weight > 0 ? ( $potential_points / $total_weight ) * 100 : 0.0;
+			// A whole number, matching the score's own 0-100 precision — a
+			// decimal (11.8%) reads as noise, not as a more accurate answer.
+			$potential_percentage = (int) round( $percentage );
+
+			// A criterion can be fractionally incomplete (e.g. freshness decay
+			// at 0.996) yet round to 0% gain — not worth showing as a tip, it
+			// would just read as "+0%" with nothing to actually act on.
+			if ( $potential_percentage <= 0 ) {
+				continue;
+			}
 
 			$tips[] = array(
 				'id'                   => $id,
 				'label'                => $item['label'],
 				'tip'                  => $item['tip'],
-				// A whole number, matching the score's own 0-100 precision — a
-				// decimal (11.8%) reads as noise, not as a more accurate answer.
-				'potential_percentage' => (int) round( $percentage ),
+				'potential_percentage' => $potential_percentage,
 			);
 		}
 

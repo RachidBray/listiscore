@@ -207,4 +207,36 @@ class ScorerTest extends LHS_TestCase {
 		$this->assertSame( 'd', $tips[2]['id'] );
 		$this->assertSame( 4, $tips[2]['potential_percentage'] );
 	}
+
+	/**
+	 * A criterion can be fractionally incomplete (e.g. freshness decay
+	 * landing at 0.996 instead of 1.0) yet its potential gain rounds down
+	 * to 0% — that's not an actionable recommendation, so it must be
+	 * excluded entirely rather than shown as a confusing "+0%" tip.
+	 */
+	public function test_get_recommendations_excludes_tips_that_round_to_zero_percent() {
+		Functions\when( 'get_post_meta' )->justReturn(
+			array(
+				'freshness' => array(
+					'label'    => 'Freshness',
+					'weight'   => 5,
+					'fraction' => 0.996,
+					'points'   => 4.98,
+					'tip'      => 'Update your listing regularly.',
+				),
+				'logo'      => array(
+					'label'    => 'Logo',
+					'weight'   => 5,
+					'fraction' => 0.0,
+					'points'   => 0.0,
+					'tip'      => 'Upload your business logo.',
+				),
+			)
+		);
+
+		$tips = LHS_Scorer::get_recommendations( 1 );
+
+		$this->assertCount( 1, $tips );
+		$this->assertSame( 'logo', $tips[0]['id'] );
+	}
 }

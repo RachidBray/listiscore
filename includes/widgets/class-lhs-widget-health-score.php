@@ -233,7 +233,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							esc_html_e( 'All steps done', 'listing-health-score' );
 						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
-							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
+							echo esc_html( sprintf( __( '%d%% left', 'listing-health-score' ), $remaining ) );
 						}
 						?>
 					</span>
@@ -325,7 +325,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							esc_html_e( 'All steps done', 'listing-health-score' );
 						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
-							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
+							echo esc_html( sprintf( __( '%d%% left', 'listing-health-score' ), $remaining ) );
 						}
 						?>
 					</span>
