@@ -182,59 +182,88 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	private function render_aui( $score, $band, $color, $recommendations, $title ) {
 		global $aui_bs5;
 
-		$me_1        = $aui_bs5 ? 'me-1' : 'mr-1';
-		$me_2        = $aui_bs5 ? 'me-2' : 'mr-2';
-		$badge_color = $aui_bs5 ? 'text-bg-' . $color : 'badge-' . $color;
-		$track_color = $this->band_track_color( $band );
+		$me_3      = $aui_bs5 ? 'me-3' : 'mr-3';
+		$remaining = 100 - $score;
+		$tint      = $this->band_track_color( $band );
+
+		if ( empty( $recommendations ) ) {
+			$headline = __( "You're all set! 🎉", 'listing-health-score' );
+			$subhead  = __( 'Your listing meets every criterion we check for.', 'listing-health-score' );
+		} else {
+			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
+			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+		}
 		?>
 		<div class="lhs-health-score">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
-			<div class="d-flex align-items-center mb-2">
-				<?php
-				$badge_args = array(
-					'content' => $score . '/100',
-					'class'   => 'badge ' . $badge_color . ' fs-6 ' . $me_2,
-				);
-				echo aui()->badge( $badge_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- aui()->badge() escapes its own output.
-				?>
-				<span class="text-muted text-capitalize"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
+
+			<div class="text-center mb-4">
+				<h4 class="mb-2"><?php echo esc_html( $headline ); ?></h4>
+				<p class="text-muted mb-4"><?php echo esc_html( $subhead ); ?></p>
+
+				<div class="progress mb-2" style="height: .75rem;">
+					<div
+						class="progress-bar progress-bar-striped progress-bar-animated bg-<?php echo esc_attr( $color ); ?>"
+						role="progressbar"
+						aria-label="<?php echo esc_attr( $this->band_label( $band ) ); ?>"
+						style="width: <?php echo esc_attr( $score ); ?>%;"
+						aria-valuenow="<?php echo esc_attr( $score ); ?>"
+						aria-valuemin="0"
+						aria-valuemax="100"
+					></div>
+				</div>
+
+				<div class="d-flex justify-content-between small">
+					<span class="fw-semibold text-<?php echo esc_attr( $color ); ?>">
+						<?php
+						/* translators: %d: score percentage complete. */
+						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
+						?>
+					</span>
+					<?php if ( $remaining > 0 ) : ?>
+						<span class="text-muted">
+							<?php
+							/* translators: %d: percentage remaining to reach a full score. */
+							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
+							?>
+						</span>
+					<?php endif; ?>
+				</div>
 			</div>
-			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. The percentage label is centered across the full bar (not just the fill) so it's never clipped by a small fill at low scores; dark ink reads clearly against both the pale track and every band's fill color. */ ?>
-			<div class="progress mb-3" style="height: 18px; background-color: <?php echo esc_attr( $track_color ); ?>; position: relative;">
-				<div
-					class="progress-bar bg-<?php echo esc_attr( $color ); ?>"
-					role="progressbar"
-					style="width: <?php echo esc_attr( $score ); ?>%;"
-					aria-valuenow="<?php echo esc_attr( $score ); ?>"
-					aria-valuemin="0"
-					aria-valuemax="100"
-				></div>
-				<span
-					class="small fw-semibold"
-					style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #0b0b0b; line-height: 1;"
-				>
-					<?php echo esc_html( $score ); ?>%
-				</span>
-			</div>
+
 			<?php if ( ! empty( $recommendations ) ) : ?>
-				<ul class="lhs-recommendations list-unstyled mb-0">
-					<?php foreach ( $recommendations as $tip ) : ?>
-						<li class="d-flex align-items-center justify-content-between mb-2">
-							<span>
-								<i class="fas fa-arrow-up text-success <?php echo esc_attr( $me_1 ); ?>" aria-hidden="true"></i>
-								<?php echo esc_html( $tip['tip'] ); ?>
-							</span>
-							<span class="badge fw-normal" style="background-color: #f0efec; color: #666;">
+				<div class="list-group list-group-flush gap-2">
+					<?php
+					foreach ( $recommendations as $i => $tip ) :
+						// The biggest win (list is already sorted by potential_percentage
+						// descending) gets a tinted, bordered card so it stands out; the
+						// rest stay plain — draws the eye to the single most useful action.
+						$is_first   = ( 0 === $i );
+						$item_class = $is_first ? 'border border-' . $color : 'bg-light border-0';
+						$item_style = $is_first ? 'background-color: ' . $tint . ';' : '';
+						?>
+						<div
+							class="list-group-item d-flex justify-content-between align-items-center px-3 py-3 rounded-3 <?php echo esc_attr( $item_class ); ?>"
+							style="<?php echo esc_attr( $item_style ); ?>"
+						>
+							<div class="d-flex align-items-start">
+								<span class="text-success fw-bold fs-5 <?php echo esc_attr( $me_3 ); ?> mt-1" aria-hidden="true">&#8599;</span>
+								<div>
+									<div class="fw-semibold text-dark fs-6"><?php echo esc_html( $tip['label'] ); ?></div>
+									<div class="text-muted small mt-1"><?php echo esc_html( $tip['tip'] ); ?></div>
+								</div>
+							</div>
+							<span class="badge bg-white text-dark border px-3 py-2 rounded-2 fw-bold shadow-sm">
 								<?php
-								/* translators: %d: potential score percentage gained, e.g. "12". */
-								echo esc_html( sprintf( __( '%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								/* translators: %d: potential score percentage gained. */
+								echo esc_html( sprintf( __( '+%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
-						</li>
+						</div>
 					<?php endforeach; ?>
-				</ul>
+				</div>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -250,52 +279,83 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 * @param string  $title           Optional widget title.
 	 */
 	private function render_legacy( $score, $band, $color, $recommendations, $title ) {
-		$hex   = $this->band_hex_color( $band );
-		$track = $this->band_track_color( $band );
+		$hex       = $this->band_hex_color( $band );
+		$tint      = $this->band_track_color( $band );
+		$remaining = 100 - $score;
+
+		if ( empty( $recommendations ) ) {
+			$headline = __( "You're all set! 🎉", 'listing-health-score' );
+			$subhead  = __( 'Your listing meets every criterion we check for.', 'listing-health-score' );
+		} else {
+			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
+			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+		}
 		?>
 		<div class="lhs-health-score lhs-health-score--legacy">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
-			<p style="display:flex;align-items:center;gap:8px;">
-				<span
-					class="lhs-badge lhs-badge--<?php echo esc_attr( $band ); ?>"
-					style="background:<?php echo esc_attr( $hex ); ?>;color:<?php echo esc_attr( $this->band_badge_text_color( $band ) ); ?>;border-radius:999px;padding:2px 10px;font-weight:600;"
+
+			<div style="text-align:center;margin-bottom:24px;">
+				<h4 style="margin:0 0 8px;"><?php echo esc_html( $headline ); ?></h4>
+				<p style="color:#666;margin:0 0 16px;"><?php echo esc_html( $subhead ); ?></p>
+
+				<div
+					role="progressbar"
+					aria-label="<?php echo esc_attr( $this->band_label( $band ) ); ?>"
+					aria-valuenow="<?php echo esc_attr( $score ); ?>"
+					aria-valuemin="0"
+					aria-valuemax="100"
+					style="background:#eee;border-radius:999px;height:12px;overflow:hidden;margin-bottom:8px;"
 				>
-					<?php echo esc_html( $score ); ?>/100
-				</span>
-				<span style="color:#666;"><?php echo esc_html( $this->band_label( $band ) ); ?></span>
-			</p>
-			<?php /* Track is a lighter step of the fill's own hue (not a neutral gray) so the band still reads across the whole bar, not just the filled portion. The percentage label is centered across the full bar (not just the fill) so it's never clipped by a small fill at low scores; dark ink reads clearly against both the pale track and every band's fill color. */ ?>
-			<div
-				role="progressbar"
-				aria-valuenow="<?php echo esc_attr( $score ); ?>"
-				aria-valuemin="0"
-				aria-valuemax="100"
-				style="background:<?php echo esc_attr( $track ); ?>;border-radius:999px;height:18px;overflow:hidden;margin-bottom:12px;position:relative;"
-			>
-				<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;border-radius:999px;"></div>
-				<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#0b0b0b;font-size:0.8em;font-weight:600;line-height:1;">
-					<?php echo esc_html( $score ); ?>%
-				</span>
+					<div style="background:<?php echo esc_attr( $hex ); ?>;width:<?php echo esc_attr( $score ); ?>%;height:100%;border-radius:999px;"></div>
+				</div>
+
+				<div style="display:flex;justify-content:space-between;font-size:0.85em;">
+					<span style="font-weight:600;color:<?php echo esc_attr( $hex ); ?>;">
+						<?php
+						/* translators: %d: score percentage complete. */
+						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
+						?>
+					</span>
+					<?php if ( $remaining > 0 ) : ?>
+						<span style="color:#666;">
+							<?php
+							/* translators: %d: percentage remaining to reach a full score. */
+							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
+							?>
+						</span>
+					<?php endif; ?>
+				</div>
 			</div>
+
 			<?php if ( ! empty( $recommendations ) ) : ?>
-				<ul style="list-style:none;margin:0;padding:0;">
-					<?php foreach ( $recommendations as $tip ) : ?>
-						<li style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0;">
-							<span>
-								<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0ca30c;margin-right:6px;"></span>
-								<?php echo esc_html( $tip['tip'] ); ?>
-							</span>
-							<span style="background:#f0efec;color:#666;border-radius:999px;padding:1px 8px;font-size:0.85em;white-space:nowrap;">
+				<div style="display:flex;flex-direction:column;gap:8px;">
+					<?php
+					foreach ( $recommendations as $i => $tip ) :
+						// The biggest win (list is already sorted by potential_percentage
+						// descending) gets a tinted, bordered card so it stands out.
+						$is_first = ( 0 === $i );
+						$item_bg  = $is_first ? $tint : '#f7f7f6';
+						$border   = $is_first ? '1px solid ' . $hex : 'none';
+						?>
+						<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;background:<?php echo esc_attr( $item_bg ); ?>;border:<?php echo esc_attr( $border ); ?>;">
+							<div style="display:flex;align-items:flex-start;">
+								<span style="color:#0ca30c;font-weight:700;font-size:1.1em;margin-right:12px;" aria-hidden="true">&#8599;</span>
+								<div>
+									<div style="font-weight:600;color:#0b0b0b;"><?php echo esc_html( $tip['label'] ); ?></div>
+									<div style="color:#666;font-size:0.9em;margin-top:2px;"><?php echo esc_html( $tip['tip'] ); ?></div>
+								</div>
+							</div>
+							<span style="background:#fff;color:#0b0b0b;border:1px solid #ddd;padding:4px 10px;border-radius:6px;font-weight:700;white-space:nowrap;">
 								<?php
-								/* translators: %d: potential score percentage gained, e.g. "12". */
-								echo esc_html( sprintf( __( '%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								/* translators: %d: potential score percentage gained. */
+								echo esc_html( sprintf( __( '+%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
-						</li>
+						</div>
 					<?php endforeach; ?>
-				</ul>
+				</div>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -370,31 +430,10 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	}
 
 	/**
-	 * Legible text color for the score badge's colored background.
-	 *
-	 * Computed from actual contrast ratios against each status hex (not
-	 * assumed): white fails badly on the amber "ok" background (1.83:1) and
-	 * is marginal on green (3.35:1), so those two get dark ink; red tests
-	 * better with white (4.80:1) than dark (4.10:1).
-	 *
-	 * @param string $band good|ok|poor.
-	 * @return string
-	 */
-	private function band_badge_text_color( $band ) {
-		$colors = array(
-			'good' => '#0b0b0b',
-			'ok'   => '#0b0b0b',
-			'poor' => '#ffffff',
-		);
-
-		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#0b0b0b';
-	}
-
-	/**
-	 * Track (unfilled) color for a band's progress meter.
-	 *
-	 * A lighter step of the fill's own hue, not a neutral gray, so the band
-	 * still reads across the whole bar rather than just the filled portion.
+	 * Tint color for a band — a lighter step of the fill's own hue, not a
+	 * neutral gray. Used as the highlight background for the first (biggest
+	 * win) recommendation card, paired with a solid `border-{color}` in AUI
+	 * mode or `$hex` border in legacy mode.
 	 *
 	 * @param string $band good|ok|poor.
 	 * @return string
