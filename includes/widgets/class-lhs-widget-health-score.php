@@ -184,7 +184,6 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 
 		$me_3        = $aui_bs5 ? 'me-3' : 'mr-3';
 		$remaining   = 100 - $score;
-		$tint        = $this->band_track_color( $band );
 		$is_complete = ( 100 === $score );
 
 		if ( $is_complete ) {
@@ -244,18 +243,9 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			<?php if ( $show_recommendations ) : ?>
 				<div class="list-group list-group-flush gap-2">
 					<?php
-					foreach ( $recommendations as $i => $tip ) :
-						// The biggest win (list is already sorted by potential_percentage
-						// descending) gets a tinted, bordered card so it stands out; the
-						// rest stay plain — draws the eye to the single most useful action.
-						$is_first   = ( 0 === $i );
-						$item_class = $is_first ? 'border border-' . $color : 'bg-light border-0';
-						$item_style = $is_first ? 'background-color: ' . $tint . ';' : '';
+					foreach ( $recommendations as $tip ) :
 						?>
-						<div
-							class="list-group-item d-flex justify-content-between align-items-center px-3 py-3 rounded-3 <?php echo esc_attr( $item_class ); ?>"
-							style="<?php echo esc_attr( $item_style ); ?>"
-						>
+						<div class="list-group-item d-flex justify-content-between align-items-center px-3 py-3 rounded-3 bg-light border-0">
 							<div class="d-flex align-items-start">
 								<span class="text-success fw-bold fs-5 <?php echo esc_attr( $me_3 ); ?> mt-1" aria-hidden="true">&#8599;</span>
 								<div>
@@ -288,7 +278,6 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 */
 	private function render_legacy( $score, $band, $color, $recommendations, $title ) {
 		$hex         = $this->band_hex_color( $band );
-		$tint        = $this->band_track_color( $band );
 		$remaining   = 100 - $score;
 		$is_complete = ( 100 === $score );
 
@@ -346,14 +335,9 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			<?php if ( $show_recommendations ) : ?>
 				<div style="display:flex;flex-direction:column;gap:8px;">
 					<?php
-					foreach ( $recommendations as $i => $tip ) :
-						// The biggest win (list is already sorted by potential_percentage
-						// descending) gets a tinted, bordered card so it stands out.
-						$is_first = ( 0 === $i );
-						$item_bg  = $is_first ? $tint : '#f7f7f6';
-						$border   = $is_first ? '1px solid ' . $hex : 'none';
+					foreach ( $recommendations as $tip ) :
 						?>
-						<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;background:<?php echo esc_attr( $item_bg ); ?>;border:<?php echo esc_attr( $border ); ?>;">
+						<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;background:#f7f7f6;">
 							<div style="display:flex;align-items:flex-start;">
 								<span style="color:#0ca30c;font-weight:700;font-size:1.1em;margin-right:12px;" aria-hidden="true">&#8599;</span>
 								<div>
@@ -441,25 +425,6 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 		);
 
 		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#666';
-	}
-
-	/**
-	 * Tint color for a band — a lighter step of the fill's own hue, not a
-	 * neutral gray. Used as the highlight background for the first (biggest
-	 * win) recommendation card, paired with a solid `border-{color}` in AUI
-	 * mode or `$hex` border in legacy mode.
-	 *
-	 * @param string $band good|ok|poor.
-	 * @return string
-	 */
-	private function band_track_color( $band ) {
-		$colors = array(
-			'good' => '#dbf1db',
-			'ok'   => '#fef3dc',
-			'poor' => '#f8e2e2',
-		);
-
-		return isset( $colors[ $band ] ) ? $colors[ $band ] : '#eee';
 	}
 
 	/**
