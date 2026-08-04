@@ -182,16 +182,20 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	private function render_aui( $score, $band, $color, $recommendations, $title ) {
 		global $aui_bs5;
 
-		$me_3      = $aui_bs5 ? 'me-3' : 'mr-3';
-		$remaining = 100 - $score;
-		$tint      = $this->band_track_color( $band );
+		$me_3        = $aui_bs5 ? 'me-3' : 'mr-3';
+		$remaining   = 100 - $score;
+		$tint        = $this->band_track_color( $band );
+		$is_complete = ( 100 === $score );
 
-		if ( empty( $recommendations ) ) {
-			$headline = __( "You're all set! 🎉", 'listing-health-score' );
-			$subhead  = __( 'Your listing meets every criterion we check for.', 'listing-health-score' );
+		if ( $is_complete ) {
+			$headline  = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
+			$subhead   = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
+			$bar_class = 'progress-bar bg-' . $color;
 		} else {
 			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
 			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+			// Striped/animated implies "in progress" — only true while it actually is.
+			$bar_class = 'progress-bar progress-bar-striped progress-bar-animated bg-' . $color;
 		}
 		?>
 		<div class="lhs-health-score">
@@ -205,7 +209,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 
 				<div class="progress mb-2" style="height: .75rem;">
 					<div
-						class="progress-bar progress-bar-striped progress-bar-animated bg-<?php echo esc_attr( $color ); ?>"
+						class="<?php echo esc_attr( $bar_class ); ?>"
 						role="progressbar"
 						aria-label="<?php echo esc_attr( $this->band_label( $band ) ); ?>"
 						style="width: <?php echo esc_attr( $score ); ?>%;"
@@ -222,18 +226,20 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
 						?>
 					</span>
-					<?php if ( $remaining > 0 ) : ?>
-						<span class="text-muted">
-							<?php
+					<span class="text-muted">
+						<?php
+						if ( $is_complete ) {
+							esc_html_e( 'All steps done', 'listing-health-score' );
+						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
 							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
-							?>
-						</span>
-					<?php endif; ?>
+						}
+						?>
+					</span>
 				</div>
 			</div>
 
-			<?php if ( ! empty( $recommendations ) ) : ?>
+			<?php if ( ! $is_complete && ! empty( $recommendations ) ) : ?>
 				<div class="list-group list-group-flush gap-2">
 					<?php
 					foreach ( $recommendations as $i => $tip ) :
@@ -279,13 +285,14 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 * @param string  $title           Optional widget title.
 	 */
 	private function render_legacy( $score, $band, $color, $recommendations, $title ) {
-		$hex       = $this->band_hex_color( $band );
-		$tint      = $this->band_track_color( $band );
-		$remaining = 100 - $score;
+		$hex         = $this->band_hex_color( $band );
+		$tint        = $this->band_track_color( $band );
+		$remaining   = 100 - $score;
+		$is_complete = ( 100 === $score );
 
-		if ( empty( $recommendations ) ) {
-			$headline = __( "You're all set! 🎉", 'listing-health-score' );
-			$subhead  = __( 'Your listing meets every criterion we check for.', 'listing-health-score' );
+		if ( $is_complete ) {
+			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
+			$subhead  = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
 		} else {
 			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
 			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
@@ -318,18 +325,20 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
 						?>
 					</span>
-					<?php if ( $remaining > 0 ) : ?>
-						<span style="color:#666;">
-							<?php
+					<span style="color:#666;">
+						<?php
+						if ( $is_complete ) {
+							esc_html_e( 'All steps done', 'listing-health-score' );
+						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
 							echo esc_html( sprintf( __( 'Only %d%% left', 'listing-health-score' ), $remaining ) );
-							?>
-						</span>
-					<?php endif; ?>
+						}
+						?>
+					</span>
 				</div>
 			</div>
 
-			<?php if ( ! empty( $recommendations ) ) : ?>
+			<?php if ( ! $is_complete && ! empty( $recommendations ) ) : ?>
 				<div style="display:flex;flex-direction:column;gap:8px;">
 					<?php
 					foreach ( $recommendations as $i => $tip ) :

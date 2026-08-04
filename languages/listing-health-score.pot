@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Listing Health Score for GeoDirectory 0.8.0\n"
+"Project-Id-Version: Listing Health Score for GeoDirectory 0.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/listing-health-score\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-04T11:30:25+00:00\n"
+"POT-Creation-Date: 2026-08-04T12:09:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: listing-health-score\n"
@@ -168,17 +168,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: includes/class-lhs-admin-list-table.php:197
-#: includes/widgets/class-lhs-widget-health-score.php:459
+#: includes/widgets/class-lhs-widget-health-score.php:468
 msgid "Good"
 msgstr ""
 
 #: includes/class-lhs-admin-list-table.php:198
-#: includes/widgets/class-lhs-widget-health-score.php:460
+#: includes/widgets/class-lhs-widget-health-score.php:469
 msgid "Needs improvement"
 msgstr ""
 
 #: includes/class-lhs-admin-list-table.php:199
-#: includes/widgets/class-lhs-widget-health-score.php:461
+#: includes/widgets/class-lhs-widget-health-score.php:470
 msgid "Poor"
 msgstr ""
 
@@ -330,43 +330,48 @@ msgstr ""
 msgid "Not a scoreable listing."
 msgstr ""
 
-#: includes/widgets/class-lhs-widget-health-score.php:190
-#: includes/widgets/class-lhs-widget-health-score.php:287
-msgid "You're all set! 🎉"
-msgstr ""
-
 #: includes/widgets/class-lhs-widget-health-score.php:191
-#: includes/widgets/class-lhs-widget-health-score.php:288
-msgid "Your listing meets every criterion we check for."
+#: includes/widgets/class-lhs-widget-health-score.php:294
+msgid "Your profile is fully optimized! 🚀"
 msgstr ""
 
-#: includes/widgets/class-lhs-widget-health-score.php:193
-#: includes/widgets/class-lhs-widget-health-score.php:290
+#: includes/widgets/class-lhs-widget-health-score.php:192
+#: includes/widgets/class-lhs-widget-health-score.php:295
+msgid "Great job! Your listing is verified and set up for maximum visibility and visitor trust."
+msgstr ""
+
+#: includes/widgets/class-lhs-widget-health-score.php:195
+#: includes/widgets/class-lhs-widget-health-score.php:297
 msgid "You're only a few steps away! 🎉"
 msgstr ""
 
-#: includes/widgets/class-lhs-widget-health-score.php:194
-#: includes/widgets/class-lhs-widget-health-score.php:291
+#: includes/widgets/class-lhs-widget-health-score.php:196
+#: includes/widgets/class-lhs-widget-health-score.php:298
 msgid "Complete a few more steps to increase your visibility and earn more customer trust."
 msgstr ""
 
 #. translators: %d: score percentage complete.
-#: includes/widgets/class-lhs-widget-health-score.php:222
-#: includes/widgets/class-lhs-widget-health-score.php:318
+#: includes/widgets/class-lhs-widget-health-score.php:226
+#: includes/widgets/class-lhs-widget-health-score.php:325
 #, php-format
 msgid "%d%% Complete"
 msgstr ""
 
+#: includes/widgets/class-lhs-widget-health-score.php:232
+#: includes/widgets/class-lhs-widget-health-score.php:331
+msgid "All steps done"
+msgstr ""
+
 #. translators: %d: percentage remaining to reach a full score.
-#: includes/widgets/class-lhs-widget-health-score.php:229
-#: includes/widgets/class-lhs-widget-health-score.php:325
+#: includes/widgets/class-lhs-widget-health-score.php:235
+#: includes/widgets/class-lhs-widget-health-score.php:334
 #, php-format
 msgid "Only %d%% left"
 msgstr ""
 
 #. translators: %d: potential score percentage gained.
-#: includes/widgets/class-lhs-widget-health-score.php:261
-#: includes/widgets/class-lhs-widget-health-score.php:353
+#: includes/widgets/class-lhs-widget-health-score.php:267
+#: includes/widgets/class-lhs-widget-health-score.php:362
 #, php-format
 msgid "+%d%%"
 msgstr ""
