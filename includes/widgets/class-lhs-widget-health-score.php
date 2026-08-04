@@ -81,7 +81,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			),
 			'show_recommendations' => array(
 				'title'    => __( 'Show recommendations:', 'listing-health-score' ),
-				'desc'     => __( 'Show the list of tips sorted by potential point gain.', 'listing-health-score' ),
+				'desc'     => __( 'Show the list of tips sorted by potential score percentage gain.', 'listing-health-score' ),
 				'type'     => 'checkbox',
 				'value'    => '1',
 				'default'  => 1,
