@@ -197,13 +197,15 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			// Striped/animated implies "in progress" — only true while it actually is.
 			$bar_class = 'progress-bar progress-bar-striped progress-bar-animated bg-' . $color;
 		}
+
+		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );
 		?>
 		<div class="lhs-health-score">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
 
-			<div class="text-center mb-4">
+			<div class="text-center <?php echo esc_attr( $show_recommendations ? 'mb-4' : '' ); ?>">
 				<h4 class="mb-2"><?php echo esc_html( $headline ); ?></h4>
 				<p class="text-muted mb-4"><?php echo esc_html( $subhead ); ?></p>
 
@@ -239,7 +241,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				</div>
 			</div>
 
-			<?php if ( ! $is_complete && ! empty( $recommendations ) ) : ?>
+			<?php if ( $show_recommendations ) : ?>
 				<div class="list-group list-group-flush gap-2">
 					<?php
 					foreach ( $recommendations as $i => $tip ) :
@@ -297,13 +299,16 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
 			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
 		}
+
+		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );
+		$header_style         = 'text-align:center;' . ( $show_recommendations ? 'margin-bottom:24px;' : '' );
 		?>
 		<div class="lhs-health-score lhs-health-score--legacy">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
 
-			<div style="text-align:center;margin-bottom:24px;">
+			<div style="<?php echo esc_attr( $header_style ); ?>">
 				<h4 style="margin:0 0 8px;"><?php echo esc_html( $headline ); ?></h4>
 				<p style="color:#666;margin:0 0 16px;"><?php echo esc_html( $subhead ); ?></p>
 
@@ -338,7 +343,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				</div>
 			</div>
 
-			<?php if ( ! $is_complete && ! empty( $recommendations ) ) : ?>
+			<?php if ( $show_recommendations ) : ?>
 				<div style="display:flex;flex-direction:column;gap:8px;">
 					<?php
 					foreach ( $recommendations as $i => $tip ) :
