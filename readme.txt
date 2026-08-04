@@ -4,7 +4,7 @@ Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.6.3
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,7 +54,7 @@ The "claimed" criterion simply isn't counted against you — it returns full cre
 
 = Can I change which criteria count, or how much each is worth? =
 
-Yes. Go to GeoDirectory > Settings > Health Score to enable/disable individual criteria and adjust their point weights, plus the targets used for criteria that scale (description length, photo count, etc.) and the score band thresholds.
+Yes. Go to GeoDirectory > Settings > Health Score to enable/disable individual criteria and adjust what percentage of the score each is worth, plus the targets used for criteria that scale (description length, photo count, etc.) and the score band thresholds. Enabled criteria must add up to exactly 100% — the page shows a running total as you edit, and won't save until it does.
 
 = Can I add my own criteria? =
 
@@ -71,6 +71,10 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 3. The owner-facing widget showing a listing's score, band, and prioritized recommendations.
 
 == Changelog ==
+
+= 0.7.0 =
+* Settings tab: per-criterion weight fields are now labeled and validated as a percentage of the score, with a live running total that turns red/green as you edit - ADDED
+* Settings tab: saving is now rejected (with an explanatory notice, nothing is persisted) if enabled criteria don't add up to exactly 100 - ADDED
 
 = 0.6.3 =
 * Owner-facing widget: recommendation percentages now round to a whole number and dropped the "+" prefix (e.g. "8%" instead of "+7.5%") - CHANGED

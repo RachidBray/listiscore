@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Listing Health Score for GeoDirectory 0.6.3\n"
+"Project-Id-Version: Listing Health Score for GeoDirectory 0.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/listing-health-score\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-03T19:08:29+00:00\n"
+"POT-Creation-Date: 2026-08-04T06:06:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: listing-health-score\n"
@@ -35,104 +35,116 @@ msgstr ""
 msgid "AddictedToWeb"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:22
+#: includes/admin/settings/class-lhs-settings-health-score.php:30
 msgid "Health Score"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:39
+#: includes/admin/settings/class-lhs-settings-health-score.php:54
 msgid "Score Bands"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:41
+#: includes/admin/settings/class-lhs-settings-health-score.php:56
 msgid "Thresholds used to color-code the Health column and owner dashboards."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:45
+#: includes/admin/settings/class-lhs-settings-health-score.php:60
 msgid "\"Good\" threshold"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:46
+#: includes/admin/settings/class-lhs-settings-health-score.php:61
 msgid "Scores at or above this value are shown as good."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:58
+#: includes/admin/settings/class-lhs-settings-health-score.php:73
 msgid "\"OK\" threshold"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:59
+#: includes/admin/settings/class-lhs-settings-health-score.php:74
 msgid "Scores at or above this value (and below \"Good\") are shown as OK. Anything lower is \"poor\"."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:76
+#: includes/admin/settings/class-lhs-settings-health-score.php:91
 msgid "Targets"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:78
+#: includes/admin/settings/class-lhs-settings-health-score.php:93
 msgid "Targets used to calculate partial credit for criteria that scale, such as description length or photo count."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:82
+#: includes/admin/settings/class-lhs-settings-health-score.php:97
 msgid "Description target length"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:83
+#: includes/admin/settings/class-lhs-settings-health-score.php:98
 msgid "Character count that earns full credit for the description criterion."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:91
+#: includes/admin/settings/class-lhs-settings-health-score.php:106
 msgid "Photos target count"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:92
+#: includes/admin/settings/class-lhs-settings-health-score.php:107
 msgid "Number of gallery photos that earns full credit."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:100
+#: includes/admin/settings/class-lhs-settings-health-score.php:115
 msgid "Reviews target count"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:101
+#: includes/admin/settings/class-lhs-settings-health-score.php:116
 msgid "Number of reviews that earns full credit."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:109
+#: includes/admin/settings/class-lhs-settings-health-score.php:124
 msgid "Social links target count"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:110
+#: includes/admin/settings/class-lhs-settings-health-score.php:125
 msgid "Number of connected social profiles that earns full credit."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:118
+#: includes/admin/settings/class-lhs-settings-health-score.php:133
 msgid "Freshness max days"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:119
+#: includes/admin/settings/class-lhs-settings-health-score.php:134
 msgid "Days since the last update after which the freshness criterion decays to zero."
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:132
+#: includes/admin/settings/class-lhs-settings-health-score.php:147
 msgid "Criteria"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:134
-msgid "Enable or disable individual criteria and adjust how many points each is worth."
+#. translators: %d: number that enabled criteria weights must add up to (always 100).
+#: includes/admin/settings/class-lhs-settings-health-score.php:150
+#, php-format
+msgid "Enable or disable individual criteria and set what percentage of the score each is worth. Enabled criteria must add up to exactly %d."
 msgstr ""
 
 #. translators: %s: criterion label, e.g. "Featured image".
-#: includes/admin/settings/class-lhs-settings-health-score.php:145
+#: includes/admin/settings/class-lhs-settings-health-score.php:161
 #, php-format
 msgid "Enable: %s"
 msgstr ""
 
 #. translators: %s: criterion label, e.g. "Featured image".
-#: includes/admin/settings/class-lhs-settings-health-score.php:153
+#: includes/admin/settings/class-lhs-settings-health-score.php:170
 #, php-format
-msgid "%s weight"
+msgid "%s (%% of score)"
 msgstr ""
 
-#: includes/admin/settings/class-lhs-settings-health-score.php:154
-msgid "Points this criterion is worth when fully met."
+#: includes/admin/settings/class-lhs-settings-health-score.php:171
+msgid "Percentage of the total score this criterion is worth when fully met."
+msgstr ""
+
+#: includes/admin/settings/class-lhs-settings-health-score.php:221
+msgid "Total (enabled criteria):"
+msgstr ""
+
+#. translators: %d: the total the admin actually submitted.
+#: includes/admin/settings/class-lhs-settings-health-score.php:288
+#, php-format
+msgid "Health Score settings were not saved: enabled criteria must add up to exactly 100%% of the score (currently %d%%). Adjust the weights and save again."
 msgstr ""
 
 #: includes/class-lhs-admin-column.php:41
