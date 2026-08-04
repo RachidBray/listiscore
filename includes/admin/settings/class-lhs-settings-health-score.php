@@ -15,14 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 
 	/**
-	 * Transient key used to flash a rejected-save notice across the redirect
-	 * GD's settings framework performs after every save.
-	 *
-	 * @var string
-	 */
-	const WEIGHT_ERROR_TRANSIENT = 'lhs_criteria_weight_error';
-
-	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -35,8 +27,6 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		// the Criteria section's fields, since 'id' => 'lhs_criteria_options'.
 		add_action( 'geodir_settings_lhs_criteria_options', array( $this, 'render_weight_total' ) );
 		add_action( 'geodir_settings_lhs_criteria_options_end', array( $this, 'render_weight_total_script' ) );
-
-		add_action( 'admin_notices', array( $this, 'maybe_show_weight_error' ) );
 	}
 
 	/**
@@ -270,29 +260,6 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	}
 
 	/**
-	 * Show the flashed error notice after a save was rejected for not
-	 * summing to 100, then clear it so it only shows once.
-	 */
-	public function maybe_show_weight_error() {
-		$total = get_transient( self::WEIGHT_ERROR_TRANSIENT );
-		if ( false === $total ) {
-			return;
-		}
-		delete_transient( self::WEIGHT_ERROR_TRANSIENT );
-
-		printf(
-			'<div class="notice notice-error"><p>%s</p></div>',
-			esc_html(
-				sprintf(
-					/* translators: %d: the total the admin actually submitted. */
-					__( 'Health Score settings were not saved: enabled criteria must add up to exactly 100%% of the score (currently %d%%). Adjust the weights and save again.', 'listing-health-score' ),
-					$total
-				)
-			)
-		);
-	}
-
-	/**
 	 * Save the settings fields into the `lhs_settings` option.
 	 *
 	 * Not routed through `GeoDir_Admin_Settings::save_fields()` because that
@@ -303,6 +270,14 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	 * target fields from the same submission) if enabled criteria don't add
 	 * up to exactly 100 — a partial/inconsistent save would silently break
 	 * the widget's percentage display, which assumes the total is 100.
+	 *
+	 * Setting `$geodir_settings_error` is GD's own native mechanism for this
+	 * exact situation (`GeoDir_Admin_Settings::save()` checks it right after
+	 * firing this action): it makes GD show our error via its own
+	 * `show_messages()` — the same box "Your settings have been saved."
+	 * would otherwise occupy — and, critically, *skips* that success message
+	 * entirely. Without this, GD has no way to know our save rejected
+	 * anything and tells the admin it saved regardless.
 	 */
 	public function save() {
 		$data = array(
@@ -337,11 +312,16 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		}
 
 		if ( 100 !== $total_weight ) {
-			set_transient( self::WEIGHT_ERROR_TRANSIENT, $total_weight, MINUTE_IN_SECONDS );
+			global $geodir_settings_error;
+
+			$geodir_settings_error = sprintf(
+				/* translators: %d: the total the admin actually submitted. */
+				__( 'Health Score settings were not saved: enabled criteria must add up to exactly 100%% of the score (currently %d%%). Adjust the weights and save again.', 'listing-health-score' ),
+				$total_weight
+			);
+
 			return;
 		}
-
-		delete_transient( self::WEIGHT_ERROR_TRANSIENT );
 
 		LHS_Settings::update( $data );
 	}
