@@ -5,3 +5,7 @@
 *.zip
 .phpcs-cache
 .phpunit.result.cache
+
+# Local dev context only — intentionally not tracked or pushed to GitHub.
+/AGENTS.md
+/CLAUDE.md
