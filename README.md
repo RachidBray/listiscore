@@ -8,7 +8,7 @@ A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scor
 - **Settings tab** — a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.
 - **Owner widget** — a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
 
-<!-- screenshot: admin Health column and the owner-facing recommendations widget -->
+![The Health Score settings tab and the owner-facing recommendations widget](screenshot.png)
 
 ## For contributors
 
