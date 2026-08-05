@@ -6,7 +6,7 @@ A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scor
 
 - **Admin column** — a sortable, color-coded Health column on every GeoDirectory listing type's admin list table.
 - **Settings tab** — a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.
-- **Owner widget** — a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible to the listing owner and admins (optionally public).
+- **Owner widget** — a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
 
 <!-- screenshot: admin Health column and the owner-facing recommendations widget -->
 

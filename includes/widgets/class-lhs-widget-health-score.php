@@ -88,15 +88,6 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 				'desc_tip' => true,
 				'advanced' => false,
 			),
-			'public'               => array(
-				'title'    => __( 'Show score publicly:', 'listing-health-score' ),
-				'desc'     => __( 'By default only the listing owner and admins can see the health score. Enable to show it to every visitor.', 'listing-health-score' ),
-				'type'     => 'checkbox',
-				'value'    => '1',
-				'default'  => 0,
-				'desc_tip' => true,
-				'advanced' => false,
-			),
 		);
 	}
 
@@ -115,7 +106,6 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			'title'                => '',
 			'id'                   => '',
 			'show_recommendations' => 1,
-			'public'               => 0,
 		);
 		$args     = wp_parse_args( $args, $defaults );
 
@@ -135,7 +125,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			return $is_preview ? $this->preview_placeholder( __( 'No listing found to preview.', 'listing-health-score' ) ) : '';
 		}
 
-		if ( ! $is_preview && ! self::current_user_can_view( $post_id, ! empty( $args['public'] ) ) ) {
+		if ( ! $is_preview && ! self::current_user_can_view( $post_id ) ) {
 			return '';
 		}
 
@@ -189,7 +179,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 
 		if ( $is_complete ) {
 			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
-			$subhead  = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
+			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listing-health-score' );
 		} else {
 			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
 			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
@@ -281,7 +271,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 
 		if ( $is_complete ) {
 			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
-			$subhead  = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
+			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listing-health-score' );
 		} else {
 			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
 			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
@@ -369,14 +359,14 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	}
 
 	/**
-	 * Whether the current user is allowed to see this listing's score.
+	 * Whether the current user is allowed to see this listing's score:
+	 * the listing owner or a site admin, never the general public.
 	 *
-	 * @param int  $post_id   Listing post ID.
-	 * @param bool $is_public Whether the widget instance is set to show publicly.
+	 * @param int $post_id Listing post ID.
 	 * @return bool
 	 */
-	private static function current_user_can_view( $post_id, $is_public ) {
-		if ( $is_public || current_user_can( 'manage_options' ) ) {
+	private static function current_user_can_view( $post_id ) {
+		if ( current_user_can( 'manage_options' ) ) {
 			return true;
 		}
 
