@@ -185,15 +185,14 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 		$me_3        = $aui_bs5 ? 'me-3' : 'mr-3';
 		$remaining   = 100 - $score;
 		$is_complete = ( 100 === $score );
+		$bar_class   = 'progress-bar bg-' . $color;
 
 		if ( $is_complete ) {
-			$headline  = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
-			$subhead   = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
-			$bar_class = 'progress-bar bg-' . $color;
+			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
+			$subhead  = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
 		} else {
-			$headline  = __( "You're only a few steps away! 🎉", 'listing-health-score' );
-			$subhead   = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
-			$bar_class = 'progress-bar progress-bar-striped bg-' . $color;
+			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
+			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
 		}
 
 		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );

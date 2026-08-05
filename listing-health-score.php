@@ -3,7 +3,7 @@
  * Plugin Name:       Listing Health Score for GeoDirectory
  * Plugin URI:        https://addictedtoweb.com
  * Description:       Scores every GeoDirectory listing 0-100 based on completeness and quality, with actionable recommendations.
- * Version:           0.8.6
+ * Version:           0.8.7
  * Author:            AddictedToWeb
  * Author URI:        https://addictedtoweb.com
  * License:           GPL-2.0-or-later
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LHS_VERSION', '0.8.6' );
+define( 'LHS_VERSION', '0.8.7' );
 define( 'LHS_FILE', __FILE__ );
 define( 'LHS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'LHS_URL', plugin_dir_url( __FILE__ ) );
