@@ -23,9 +23,9 @@
         <element value="LHS"/>
       </property>
     </properties>
-    <!-- "lhs"/"LHS" is the plugin's deliberate, documented prefix (see AGENTS.md); it's
-         one character under the sniff's generic 4-char minimum but is otherwise unique
-         within this WordPress install (grepped: no collisions with core or other addons). -->
+    <!-- "lhs"/"LHS" is the plugin's deliberate prefix; it's one character under the
+         sniff's generic 4-char minimum but is otherwise unique within this WordPress
+         install (grepped: no collisions with core or other addons). -->
     <exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
   </rule>
   <rule ref="PHPCompatibilityWP"/>

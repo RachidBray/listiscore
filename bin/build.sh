@@ -6,7 +6,7 @@
 # Tools like Plugin Check scan whatever directory they're pointed at as-is —
 # they don't know about .distignore, which is only a convention honored by
 # wp.org's own SVN/deploy tooling. Running Plugin Check against this repo
-# directly will always flag tests/, vendor/, AGENTS.md, .github, etc. Run it
+# directly will always flag tests/, vendor/, .github, etc. Run it
 # against this script's output instead for a result that reflects what
 # actually ships.
 #
