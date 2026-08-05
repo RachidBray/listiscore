@@ -12,8 +12,6 @@ A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scor
 
 ## For contributors
 
-This project follows a documented house-style contract so the code reads like a native AyeCode/GeoDirectory addon. Start with [AGENTS.md](AGENTS.md) — it has the full architecture, the style contract (with source references back into GeoDirectory core), the roadmap, and testing notes.
-
 ```bash
 composer install
 composer lint   # PHPCS / WPCS

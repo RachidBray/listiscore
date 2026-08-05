@@ -22,7 +22,7 @@ Listing Health Score adds a gamified completeness score to every listing in your
 * **Owner-facing widget / shortcode / block** — `[lhs_health]` (also available as a widget and a Gutenberg block) shows a "complete your listing" checklist: percent-complete progress bar and a recommendations list sorted by potential score percentage gain, so owners know exactly what to fix first. Visible only to the listing owner and site admins.
 * **Settings tab inside GeoDirectory's own settings UI** — enable or disable individual criteria, reweight them, and tune scaling targets (description length, photo/review/social counts, freshness decay window) and the score-band thresholds, all without touching code.
 * **Automatic recalculation** — scores update when a listing is saved, when reviews are added or change status, and via a daily batched cron job so freshness decay stays accurate even without new activity. Changing settings automatically invalidates and lazily recalculates affected scores.
-* **Developer-friendly** — every scaling target, threshold, and the criteria list itself are filterable; a `lhs_score_updated` action fires whenever a score changes. See `AGENTS.md` in the plugin's GitHub repository for the full list of hooks.
+* **Developer-friendly** — every scaling target, threshold, and the criteria list itself are filterable; a `lhs_score_updated` action fires whenever a score changes.
 * **Free, no upsells** — the full feature set is free. No premium tier, no license key, no nags.
 
 = Requirements =
@@ -53,7 +53,7 @@ Yes. Go to GeoDirectory > Settings > Health Score to enable/disable individual c
 
 = Can I add my own criteria? =
 
-Yes, via the `lhs_criteria` filter. See `AGENTS.md` in the plugin's source repository for the full hook reference.
+Yes, via the `lhs_criteria` filter.
 
 = Does this work without GeoDirectory? =
 
