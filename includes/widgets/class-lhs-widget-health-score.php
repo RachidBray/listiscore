@@ -191,10 +191,9 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			$subhead   = __( 'Great job! Your listing is verified and set up for maximum visibility and visitor trust.', 'listing-health-score' );
 			$bar_class = 'progress-bar bg-' . $color;
 		} else {
-			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
-			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
-			// Striped/animated implies "in progress" — only true while it actually is.
-			$bar_class = 'progress-bar progress-bar-striped progress-bar-animated bg-' . $color;
+			$headline  = __( "You're only a few steps away! 🎉", 'listing-health-score' );
+			$subhead   = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+			$bar_class = 'progress-bar progress-bar-striped bg-' . $color;
 		}
 
 		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );

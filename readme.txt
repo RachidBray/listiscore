@@ -4,7 +4,7 @@ Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.8.5
+Stable tag: 0.8.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,9 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 3. The owner-facing widget showing a listing's score, band, and prioritized recommendations.
 
 == Changelog ==
+
+= 0.8.6 =
+* Owner-facing widget: the progress bar no longer animates (moving stripes) while incomplete — keeps the static diagonal stripe texture, drops the motion - CHANGED
 
 = 0.8.5 =
 * Owner-facing widget: the "Show recommendations" option's admin-facing description still said "potential point gain" — updated to "potential score percentage gain" to match how the list has actually been sorted since v0.6.2 - FIXED
