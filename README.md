@@ -2,11 +2,11 @@
 
 ![CI](https://github.com/RachidBray/listing-health-score/actions/workflows/ci.yml/badge.svg)
 
-A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scores every listing 0-100 based on completeness and quality — a featured image, a real description, contact details, photos, reviews, and more — then shows owners exactly what to fix next for the biggest score gain.
+A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scores every listing 0-100 based on completeness and quality (a featured image, a real description, contact details, photos, reviews, and more), then shows owners exactly what to fix next for the biggest score gain.
 
-- **Admin column** — a sortable, color-coded Health column on every GeoDirectory listing type's admin list table.
-- **Settings tab** — a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.
-- **Owner widget** — a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
+- **Admin column**: a sortable, color-coded Health column on every GeoDirectory listing type's admin list table.
+- **Settings tab**: a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.
+- **Owner widget**: a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
 
 ![The Health Score settings tab and the owner-facing recommendations widget](screenshot.png)
 
