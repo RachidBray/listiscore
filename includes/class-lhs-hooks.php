@@ -2,8 +2,8 @@
 /**
  * Recalculation triggers.
  *
- * Keeps scores in sync when listings change, reviews come in, listings get
- * claimed, and runs a small daily batch so freshness decay stays accurate.
+ * Keeps scores in sync when listings change and reviews come in, and runs a
+ * small daily batch so freshness decay stays accurate.
  *
  * @package Listing_Health_Score
  */
@@ -30,9 +30,6 @@ class LHS_Hooks {
 		// Reviews affect the score.
 		add_action( 'wp_insert_comment', array( __CLASS__, 'on_comment_insert' ), 10, 2 );
 		add_action( 'transition_comment_status', array( __CLASS__, 'on_comment_status' ), 10, 3 );
-
-		// Claim Listing addon events (fires when a claim is approved).
-		add_action( 'geodir_claim_post_approved', array( __CLASS__, 'recalc' ), 10, 1 );
 
 		// Daily batch recalc for freshness decay.
 		add_action( 'lhs_daily_recalc', array( __CLASS__, 'daily_batch' ) );

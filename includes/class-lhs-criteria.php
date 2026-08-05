@@ -67,7 +67,7 @@ class LHS_Criteria {
 		$criteria = array(
 			'featured_image' => array(
 				'label'  => __( 'Featured image', 'listing-health-score' ),
-				'weight' => 10,
+				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_featured_image' ),
 				'tip'    => __( 'Add a featured image to make your listing stand out in search results.', 'listing-health-score' ),
 			),
@@ -79,19 +79,19 @@ class LHS_Criteria {
 			),
 			'description'    => array(
 				'label'  => __( 'Description', 'listing-health-score' ),
-				'weight' => 15,
+				'weight' => 16,
 				'check'  => array( __CLASS__, 'check_description' ),
 				'tip'    => __( 'Write a detailed description (300+ characters) covering your services, story and what makes you unique.', 'listing-health-score' ),
 			),
 			'business_hours' => array(
 				'label'  => __( 'Opening hours', 'listing-health-score' ),
-				'weight' => 8,
+				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_business_hours' ),
 				'tip'    => __( 'Add your opening hours so visitors know when you are available.', 'listing-health-score' ),
 			),
 			'phone'          => array(
 				'label'  => __( 'Phone number', 'listing-health-score' ),
-				'weight' => 8,
+				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_phone' ),
 				'tip'    => __( 'Add a phone number so customers can reach you directly.', 'listing-health-score' ),
 			),
@@ -103,7 +103,7 @@ class LHS_Criteria {
 			),
 			'website'        => array(
 				'label'  => __( 'Website', 'listing-health-score' ),
-				'weight' => 7,
+				'weight' => 8,
 				'check'  => array( __CLASS__, 'check_website' ),
 				'tip'    => __( 'Link your website to drive traffic and build trust.', 'listing-health-score' ),
 			),
@@ -115,25 +115,19 @@ class LHS_Criteria {
 			),
 			'photos'         => array(
 				'label'  => __( 'Photo gallery', 'listing-health-score' ),
-				'weight' => 10,
+				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_photos' ),
 				'tip'    => __( 'Upload at least 5 photos. Listings with galleries get significantly more engagement.', 'listing-health-score' ),
 			),
 			'reviews'        => array(
 				'label'  => __( 'Reviews', 'listing-health-score' ),
-				'weight' => 10,
+				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_reviews' ),
 				'tip'    => __( 'Encourage customers to leave reviews. Aim for at least 3.', 'listing-health-score' ),
 			),
-			'claimed'        => array(
-				'label'  => __( 'Claimed listing', 'listing-health-score' ),
-				'weight' => 8,
-				'check'  => array( __CLASS__, 'check_claimed' ),
-				'tip'    => __( 'Claim this listing to verify ownership and unlock full management.', 'listing-health-score' ),
-			),
 			'freshness'      => array(
 				'label'  => __( 'Recently updated', 'listing-health-score' ),
-				'weight' => 8,
+				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_freshness' ),
 				'tip'    => __( 'Update your listing regularly. Fresh listings rank better and build visitor trust.', 'listing-health-score' ),
 			),
@@ -320,22 +314,6 @@ class LHS_Criteria {
 		 */
 		$target = (int) apply_filters( 'lhs_reviews_target_count', 3 );
 		return min( 1.0, $count / max( 1, $target ) );
-	}
-
-	/**
-	 * Check whether the listing has been claimed.
-	 *
-	 * @param object $gd_post GeoDirectory post object.
-	 * @return float
-	 */
-	public static function check_claimed( $gd_post ) {
-		// GeoDirectory Claim Listing addon stores this on the detail table.
-		if ( isset( $gd_post->claimed ) ) {
-			return ! empty( $gd_post->claimed ) ? 1.0 : 0.0;
-		}
-		// Claim addon not installed: don't penalize. Returning 1 with the
-		// criterion still listed keeps weights stable across installs.
-		return 1.0;
 	}
 
 	/**

@@ -4,7 +4,7 @@ Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.8.8
+Stable tag: 0.8.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,19 +16,18 @@ Listing Health Score adds a gamified completeness score to every listing in your
 
 = Features =
 
-* **0-100 health score** for every listing, calculated from a weighted set of criteria: featured image, logo, description length, opening hours, phone, email, website, social links, photo gallery, review count, claimed status, and freshness (how recently the listing was updated).
+* **0-100 health score** for every listing, calculated from a weighted set of criteria: featured image, logo, description length, opening hours, phone, email, website, social links, photo gallery, review count, and freshness (how recently the listing was updated).
 * **Admin column** — a sortable, color-coded Health column on every GeoDirectory post type's admin list table, so admins can spot and sort by low-scoring listings instantly.
 * **Admin filter + bulk recalculate** — filter any listing type's admin list table by health band (Good / Needs improvement / Poor), and recalculate the score for any selection via the "Recalculate Health Score" bulk action.
 * **Owner-facing widget / shortcode / block** — `[lhs_health]` (also available as a widget and a Gutenberg block) shows a "complete your listing" checklist: percent-complete progress bar and a recommendations list sorted by potential score percentage gain, so owners know exactly what to fix first. Visible only to the listing owner and site admins.
 * **Settings tab inside GeoDirectory's own settings UI** — enable or disable individual criteria, reweight them, and tune scaling targets (description length, photo/review/social counts, freshness decay window) and the score-band thresholds, all without touching code.
-* **Automatic recalculation** — scores update when a listing is saved, when reviews are added or change status, when a listing is claimed (if the Claim Listing addon is active), and via a daily batched cron job so freshness decay stays accurate even without new activity. Changing settings automatically invalidates and lazily recalculates affected scores.
+* **Automatic recalculation** — scores update when a listing is saved, when reviews are added or change status, and via a daily batched cron job so freshness decay stays accurate even without new activity. Changing settings automatically invalidates and lazily recalculates affected scores.
 * **Developer-friendly** — every scaling target, threshold, and the criteria list itself are filterable; a `lhs_score_updated` action fires whenever a score changes. See `AGENTS.md` in the plugin's GitHub repository for the full list of hooks.
 * **Free, no upsells** — the full feature set is free. No premium tier, no license key, no nags.
 
 = Requirements =
 
 * [GeoDirectory](https://wordpress.org/plugins/geodirectory/) v2 or later must be installed and active. Listing Health Score does nothing without it.
-* The optional Claim Listing addon is supported but not required — the "claimed" criterion simply doesn't penalize listings when that addon isn't active.
 
 == Installation ==
 
@@ -47,10 +46,6 @@ No. Scores are calculated once and stored as post meta, then only recalculated w
 = Who can see a listing's health score? =
 
 Only the listing owner and site admins can see the score via the widget/shortcode/block — never the general public. The admin Health column is always admin-only, like the rest of wp-admin.
-
-= What happens if the Claim Listing addon isn't installed? =
-
-The "claimed" criterion simply isn't counted against you — it returns full credit so your maximum achievable score isn't affected by an addon you don't have installed.
 
 = Can I change which criteria count, or how much each is worth? =
 
@@ -71,6 +66,9 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 3. The owner-facing widget showing a listing's score, band, and prioritized recommendations.
 
 == Changelog ==
+
+= 0.8.9 =
+* Removed the "claimed" criterion and its dependency on the Claim Listing addon entirely — one less thing to configure, and the plugin no longer changes behavior based on whether that addon is installed. Default weights for the remaining 11 criteria were proportionally rescaled so they still sum to 100 - REMOVED
 
 = 0.8.8 =
 * Owner-facing widget: removed the "Show score publicly" option — the widget now renders only for the listing owner and site admins, with no visitor-facing mode. Any existing widget instance previously set to show publicly will silently stop showing to visitors - REMOVED

@@ -205,29 +205,4 @@ class CriteriaTest extends LHS_TestCase {
 
 		$this->assertSame( 0.0, LHS_Criteria::check_freshness( (object) array(), 1 ) );
 	}
-
-	/**
-	 * Claimed: Claim Listing addon present and the listing is claimed.
-	 */
-	public function test_check_claimed_addon_present_and_claimed_returns_one() {
-		$gd_post = (object) array( 'claimed' => 1 );
-
-		$this->assertSame( 1.0, LHS_Criteria::check_claimed( $gd_post ) );
-	}
-
-	/**
-	 * Claimed: Claim Listing addon present but the listing is unclaimed.
-	 */
-	public function test_check_claimed_addon_present_and_unclaimed_returns_zero() {
-		$gd_post = (object) array( 'claimed' => 0 );
-
-		$this->assertSame( 0.0, LHS_Criteria::check_claimed( $gd_post ) );
-	}
-
-	/**
-	 * Claimed: Claim Listing addon absent (property never set) doesn't penalize.
-	 */
-	public function test_check_claimed_property_absent_returns_one() {
-		$this->assertSame( 1.0, LHS_Criteria::check_claimed( (object) array() ) );
-	}
 }
