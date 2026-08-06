@@ -3,7 +3,7 @@
 ![CI](https://github.com/RachidBray/listing-health-score/actions/workflows/ci.yml/badge.svg)
 [![Latest release](https://img.shields.io/github/v/release/RachidBray/listing-health-score)](https://github.com/RachidBray/listing-health-score/releases/latest)
 
-A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scores every listing 0-100 based on completeness and quality (a featured image, a real description, contact details, photos, reviews, and more), then shows owners exactly what to fix next for the biggest score gain.
+A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/?ref=200/) that scores every listing 0-100 based on completeness and quality (a featured image, a real description, contact details, photos, reviews, and more), then shows owners exactly what to fix next for the biggest score gain.
 
 - **Admin column**: a sortable, color-coded Health column on every GeoDirectory listing type's admin list table.
 - **Settings tab**: a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.

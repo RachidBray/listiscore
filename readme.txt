@@ -51,9 +51,9 @@ Only the listing owner and site admins can see the score via the widget/shortcod
 
 Yes. Go to GeoDirectory > Settings > Health Score to enable/disable individual criteria and adjust what percentage of the score each is worth, plus the targets used for criteria that scale (description length, photo count, etc.) and the score band thresholds. Enabled criteria must add up to exactly 100%: the page shows a running total as you edit, and won't save until it does.
 
-= Can I add my own criteria? =
+= Does a low score hide a listing or hurt its ranking? =
 
-Yes, via the `lhs_criteria` filter.
+No. The health score is informational only, shown to the listing owner and site admins. It never affects a listing's visibility, its position in directory search results, or any frontend sorting; the only place a listing's score changes what an admin sees is the wp-admin Health column and its filter/sort.
 
 = Does this work without GeoDirectory? =
 
@@ -61,9 +61,7 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 
 == Screenshots ==
 
-1. The sortable, color-coded Health column on a GeoDirectory listing type's admin list table.
-2. The Health Score settings tab inside GeoDirectory's settings UI: criteria, weights, targets, and score bands.
-3. The owner-facing widget showing a listing's score, band, and prioritized recommendations.
+1. The Health Score settings tab, and the owner-facing widget showing a listing's score both in progress and fully complete.
 
 == Changelog ==
 
