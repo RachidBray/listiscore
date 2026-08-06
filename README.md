@@ -1,6 +1,7 @@
 # Listing Health Score for GeoDirectory
 
 ![CI](https://github.com/RachidBray/listing-health-score/actions/workflows/ci.yml/badge.svg)
+[![Latest release](https://img.shields.io/github/v/release/RachidBray/listing-health-score)](https://github.com/RachidBray/listing-health-score/releases/latest)
 
 A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/) that scores every listing 0-100 based on completeness and quality (a featured image, a real description, contact details, photos, reviews, and more), then shows owners exactly what to fix next for the biggest score gain.
 
@@ -17,3 +18,12 @@ composer install
 composer lint   # PHPCS / WPCS
 composer test   # PHPUnit
 ```
+
+## Releasing
+
+Version numbers are kept in three places and must match exactly: the plugin header and `LHS_VERSION` constant in `listing-health-score.php`, and `Stable tag` in `readme.txt`. To cut a release:
+
+1. Bump all three to the same version and update the changelog in `readme.txt`.
+2. Commit, then tag: `git tag v1.2.3 && git push origin v1.2.3`.
+
+Pushing a `v*.*.*` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml), which re-runs lint/tests, verifies the tag matches the version declared in the plugin files (and fails the release if it doesn't), builds a clean `.distignore`-respecting ZIP, and publishes a GitHub Release with that ZIP attached and notes generated from the commits since the last tag.

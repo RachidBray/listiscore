@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify tag matches the plugin's declared version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+
+          HEADER_VERSION=$(grep -m1 '^ \* Version:' listing-health-score.php | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9.-]*')
+          CONST_VERSION=$(grep -m1 "define( 'LHS_VERSION'" listing-health-score.php | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9.-]*')
+          README_VERSION=$(grep -m1 '^Stable tag:' readme.txt | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9.-]*')
+
+          echo "Tag version:              $VERSION"
+          echo "Plugin header Version:    $HEADER_VERSION"
+          echo "LHS_VERSION constant:     $CONST_VERSION"
+          echo "readme.txt Stable tag:    $README_VERSION"
+
+          if [ "$VERSION" != "$HEADER_VERSION" ] || [ "$VERSION" != "$CONST_VERSION" ] || [ "$VERSION" != "$README_VERSION" ]; then
+            echo "::error::Tag $TAG does not match the plugin's declared version in all three places. Fix the mismatch and re-tag before releasing."
+            exit 1
+          fi
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Lint (PHPCS / WPCS)
+        run: composer lint
+
+      - name: Unit tests (PHPUnit)
+        run: composer test
+
+      - name: Build release ZIP
+        run: composer build
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            build/listing-health-score.zip \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
