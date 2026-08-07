@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Listing Health Score for GeoDirectory
- * Plugin URI:        https://addictedtoweb.com
+ * Plugin URI:        https://github.com/RachidBray/listing-health-score
  * Description:       Scores every GeoDirectory listing 0-100 based on completeness and quality, with actionable recommendations.
  * Version:           1.0.0
  * Author:            AddictedToWeb
