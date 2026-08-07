@@ -1,5 +1,5 @@
 === Listing Health Score for GeoDirectory ===
-Contributors: addictedtoweb
+Contributors: tartamata
 Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
