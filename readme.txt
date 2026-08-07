@@ -14,6 +14,8 @@ Scores every GeoDirectory listing 0-100 based on completeness and quality, with 
 
 Listing Health Score adds a gamified completeness score to every listing in your [GeoDirectory](https://wpgeodirectory.com/) directory. Admins get an at-a-glance view of which listings need attention; listing owners get a clear, prioritized checklist of what to fix next for the biggest score gain.
 
+Source code and development happen in the open on [GitHub](https://github.com/RachidBray/listing-health-score).
+
 = Features =
 
 * **0-100 health score** for every listing, calculated from a weighted set of criteria: featured image, logo, description length, opening hours, phone, email, website, social links, photo gallery, review count, and freshness (how recently the listing was updated).
