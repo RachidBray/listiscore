@@ -4,7 +4,7 @@ Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.8.9
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be
 1. The Health Score settings tab, and the owner-facing widget showing a listing's score both in progress and fully complete.
 
 == Changelog ==
+
+= 1.0.0 =
+* First stable release - CHANGED
 
 = 0.8.9 =
 * Removed the "claimed" criterion and its dependency on the Claim Listing addon entirely: one less thing to configure, and the plugin no longer changes behavior based on whether that addon is installed. Default weights for the remaining 11 criteria were proportionally rescaled so they still sum to 100 - REMOVED
