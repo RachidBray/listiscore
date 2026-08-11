@@ -1,8 +1,8 @@
 <?php
 /**
- * Tests for LHS_Scorer: weighted score math, bands, and recommendations.
+ * Tests for ListiScore_Scorer: weighted score math, bands, and recommendations.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ use Brain\Monkey\Filters;
 /**
  * ScorerTest class.
  */
-class ScorerTest extends LHS_TestCase {
+class ListiScore_ScorerTest extends ListiScore_TestCase {
 
 	/**
 	 * Stub the calls `calculate()` makes to resolve and persist a listing,
@@ -27,7 +27,7 @@ class ScorerTest extends LHS_TestCase {
 		Functions\when( 'get_post_type' )->justReturn( 'gd_place' );
 		Functions\when( 'geodir_get_post_info' )->justReturn( (object) array( 'ID' => $post_id ) );
 		Functions\when( 'update_post_meta' )->justReturn( true );
-		// LHS_Criteria::get_all() reads LHS_Settings (no overrides saved).
+		// ListiScore_Criteria::get_all() reads ListiScore_Settings (no overrides saved).
 		Functions\when( 'get_option' )->justReturn( array() );
 	}
 
@@ -55,14 +55,14 @@ class ScorerTest extends LHS_TestCase {
 	 */
 	public function test_calculate_all_criteria_full_returns_100() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn(
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn(
 			array(
 				'a' => $this->criterion( 10, 1.0 ),
 				'b' => $this->criterion( 20, 1.0 ),
 			)
 		);
 
-		$this->assertSame( 100, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 100, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
@@ -70,14 +70,14 @@ class ScorerTest extends LHS_TestCase {
 	 */
 	public function test_calculate_all_criteria_zero_returns_0() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn(
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn(
 			array(
 				'a' => $this->criterion( 10, 0.0 ),
 				'b' => $this->criterion( 20, 0.0 ),
 			)
 		);
 
-		$this->assertSame( 0, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 0, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
@@ -86,14 +86,14 @@ class ScorerTest extends LHS_TestCase {
 	 */
 	public function test_calculate_weighted_math_produces_exact_score() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn(
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn(
 			array(
 				'a' => $this->criterion( 50, 1.0 ),
 				'b' => $this->criterion( 50, 0.5 ),
 			)
 		);
 
-		$this->assertSame( 75, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 75, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
@@ -102,52 +102,52 @@ class ScorerTest extends LHS_TestCase {
 	 */
 	public function test_calculate_skips_zero_weight_and_noncallable_criteria() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn(
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn(
 			array(
 				'zero_weight' => $this->criterion( 0, 1.0 ),
 				'noncallable' => array(
 					'label'  => 'Not callable',
 					'weight' => 10,
-					'check'  => 'lhs_this_function_does_not_exist_anywhere',
+					'check'  => 'listiscore_this_function_does_not_exist_anywhere',
 					'tip'    => 'tip',
 				),
 				'real'        => $this->criterion( 10, 1.0 ),
 			)
 		);
 
-		$this->assertSame( 100, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 100, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
-	 * The lhs_final_score filter can't push the stored score above 100.
+	 * The listiscore_final_score filter can't push the stored score above 100.
 	 */
 	public function test_calculate_clamps_final_score_above_100() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn( array( 'a' => $this->criterion( 10, 1.0 ) ) );
-		Filters\expectApplied( 'lhs_final_score' )->andReturn( 999 );
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn( array( 'a' => $this->criterion( 10, 1.0 ) ) );
+		Filters\expectApplied( 'listiscore_final_score' )->andReturn( 999 );
 
-		$this->assertSame( 100, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 100, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
-	 * The lhs_final_score filter can't push the stored score below 0.
+	 * The listiscore_final_score filter can't push the stored score below 0.
 	 */
 	public function test_calculate_clamps_final_score_below_0() {
 		$this->stub_valid_listing();
-		Filters\expectApplied( 'lhs_criteria' )->andReturn( array( 'a' => $this->criterion( 10, 1.0 ) ) );
-		Filters\expectApplied( 'lhs_final_score' )->andReturn( -50 );
+		Filters\expectApplied( 'listiscore_criteria' )->andReturn( array( 'a' => $this->criterion( 10, 1.0 ) ) );
+		Filters\expectApplied( 'listiscore_final_score' )->andReturn( -50 );
 
-		$this->assertSame( 0, LHS_Scorer::calculate( 1 ) );
+		$this->assertSame( 0, ListiScore_Scorer::calculate( 1 ) );
 	}
 
 	/**
 	 * Band boundaries: exact threshold values and the values just below them.
 	 */
 	public function test_get_band_boundaries() {
-		$this->assertSame( 'good', LHS_Scorer::get_band( 80 ) );
-		$this->assertSame( 'ok', LHS_Scorer::get_band( 79 ) );
-		$this->assertSame( 'ok', LHS_Scorer::get_band( 50 ) );
-		$this->assertSame( 'poor', LHS_Scorer::get_band( 49 ) );
+		$this->assertSame( 'good', ListiScore_Scorer::get_band( 80 ) );
+		$this->assertSame( 'ok', ListiScore_Scorer::get_band( 79 ) );
+		$this->assertSame( 'ok', ListiScore_Scorer::get_band( 50 ) );
+		$this->assertSame( 'poor', ListiScore_Scorer::get_band( 49 ) );
 	}
 
 	/**
@@ -191,7 +191,7 @@ class ScorerTest extends LHS_TestCase {
 			)
 		);
 
-		$tips = LHS_Scorer::get_recommendations( 1 );
+		$tips = ListiScore_Scorer::get_recommendations( 1 );
 
 		$this->assertCount( 3, $tips );
 
@@ -234,7 +234,7 @@ class ScorerTest extends LHS_TestCase {
 			)
 		);
 
-		$tips = LHS_Scorer::get_recommendations( 1 );
+		$tips = ListiScore_Scorer::get_recommendations( 1 );
 
 		$this->assertCount( 1, $tips );
 		$this->assertSame( 'logo', $tips[0]['id'] );

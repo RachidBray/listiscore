@@ -6,7 +6,7 @@
  * the per-criterion breakdown as post meta so dashboards never need to
  * recalculate on read.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,14 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Scorer class.
+ * ListiScore_Scorer class.
  */
-class LHS_Scorer {
+class ListiScore_Scorer {
 
-	const META_SCORE            = '_lhs_score';
-	const META_BREAKDOWN        = '_lhs_breakdown';
-	const META_UPDATED          = '_lhs_calculated_at';
-	const META_SETTINGS_VERSION = '_lhs_settings_version';
+	const META_SCORE            = '_listiscore_score';
+	const META_BREAKDOWN        = '_listiscore_breakdown';
+	const META_UPDATED          = '_listiscore_calculated_at';
+	const META_SETTINGS_VERSION = '_listiscore_settings_version';
 
 	/**
 	 * Calculate and persist the score for a listing.
@@ -40,7 +40,7 @@ class LHS_Scorer {
 			return false;
 		}
 
-		$criteria     = LHS_Criteria::get_all();
+		$criteria     = ListiScore_Criteria::get_all();
 		$total_weight = 0;
 		$earned       = 0;
 		$breakdown    = array();
@@ -75,13 +75,13 @@ class LHS_Scorer {
 		 * @param int   $post_id   Listing ID.
 		 * @param array $breakdown Per-criterion breakdown.
 		 */
-		$score = (int) apply_filters( 'lhs_final_score', $score, $post_id, $breakdown );
+		$score = (int) apply_filters( 'listiscore_final_score', $score, $post_id, $breakdown );
 		$score = max( 0, min( 100, $score ) );
 
 		update_post_meta( $post_id, self::META_SCORE, $score );
 		update_post_meta( $post_id, self::META_BREAKDOWN, $breakdown );
 		update_post_meta( $post_id, self::META_UPDATED, time() );
-		update_post_meta( $post_id, self::META_SETTINGS_VERSION, LHS_Settings::get_version() );
+		update_post_meta( $post_id, self::META_SETTINGS_VERSION, ListiScore_Settings::get_version() );
 
 		/**
 		 * Fires after a listing score has been recalculated.
@@ -90,7 +90,7 @@ class LHS_Scorer {
 		 * @param int   $score     New score.
 		 * @param array $breakdown Per-criterion breakdown.
 		 */
-		do_action( 'lhs_score_updated', $post_id, $score, $breakdown );
+		do_action( 'listiscore_score_updated', $post_id, $score, $breakdown );
 
 		return $score;
 	}
@@ -120,7 +120,7 @@ class LHS_Scorer {
 	 */
 	public static function is_stale( $post_id ) {
 		$stored_version = get_post_meta( $post_id, self::META_SETTINGS_VERSION, true );
-		return LHS_Settings::get_version() !== (int) $stored_version;
+		return ListiScore_Settings::get_version() !== (int) $stored_version;
 	}
 
 	/**
@@ -216,14 +216,14 @@ class LHS_Scorer {
 		 *
 		 * @param int $threshold Minimum score for the "good" band.
 		 */
-		$good = (int) apply_filters( 'lhs_band_good_threshold', 80 );
+		$good = (int) apply_filters( 'listiscore_band_good_threshold', 80 );
 
 		/**
 		 * Filter the "ok" band threshold.
 		 *
 		 * @param int $threshold Minimum score for the "ok" band.
 		 */
-		$ok = (int) apply_filters( 'lhs_band_ok_threshold', 50 );
+		$ok = (int) apply_filters( 'listiscore_band_ok_threshold', 50 );
 
 		if ( $score >= $good ) {
 			return 'good';

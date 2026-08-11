@@ -1,27 +1,27 @@
 <?php
 /**
- * Plugin Name:       Listing Health Score for GeoDirectory
+ * Plugin Name:       ListiScore - Listing Health Score for GeoDirectory
  * Plugin URI:        https://github.com/RachidBray/listing-health-score
  * Description:       Scores every GeoDirectory listing 0-100 based on completeness and quality, with actionable recommendations.
  * Version:           1.0.0
  * Author:            AddictedToWeb
  * Author URI:        https://addictedtoweb.com
  * License:           GPL-2.0-or-later
- * Text Domain:       listing-health-score
+ * Text Domain:       listiscore
  * Requires at least: 6.0
  * Requires PHP:      7.4
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LHS_VERSION', '1.0.0' );
-define( 'LHS_FILE', __FILE__ );
-define( 'LHS_DIR', plugin_dir_path( __FILE__ ) );
-define( 'LHS_URL', plugin_dir_url( __FILE__ ) );
+define( 'LISTISCORE_VERSION', '1.0.0' );
+define( 'LISTISCORE_FILE', __FILE__ );
+define( 'LISTISCORE_DIR', plugin_dir_path( __FILE__ ) );
+define( 'LISTISCORE_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Begins execution of the plugin once GeoDirectory core has finished loading.
@@ -31,10 +31,10 @@ define( 'LHS_URL', plugin_dir_url( __FILE__ ) );
  *
  * @since 0.2.0
  */
-function lhs_load() {
-	require_once LHS_DIR . 'includes/class-lhs-plugin.php';
+function listiscore_load() {
+	require_once LISTISCORE_DIR . 'includes/class-listiscore-plugin.php';
 
-	return LHS_Plugin::instance();
+	return ListiScore_Plugin::instance();
 }
 
 /*
@@ -46,15 +46,15 @@ function lhs_load() {
  * never come.
  */
 if ( class_exists( 'GeoDirectory' ) ) {
-	lhs_load();
+	listiscore_load();
 } else {
-	add_action( 'geodirectory_loaded', 'lhs_load' );
+	add_action( 'geodirectory_loaded', 'listiscore_load' );
 }
 
 /**
  * Admin notice when GeoDirectory is not active at all.
  *
- * This can't live inside LHS_Plugin because `geodirectory_loaded` simply
+ * This can't live inside ListiScore_Plugin because `geodirectory_loaded` simply
  * never fires when GeoDirectory is missing, so nothing in that class would
  * ever run. `plugins_loaded` fires regardless, once every plugin file has
  * been included, so it's a reliable place to check.
@@ -63,7 +63,7 @@ add_action(
 	'plugins_loaded',
 	function () {
 		if ( ! class_exists( 'GeoDirectory' ) ) {
-			add_action( 'admin_notices', 'lhs_missing_gd_notice' );
+			add_action( 'admin_notices', 'listiscore_missing_gd_notice' );
 		}
 	},
 	20
@@ -72,16 +72,16 @@ add_action(
 /**
  * Renders the missing-GeoDirectory admin notice.
  */
-function lhs_missing_gd_notice() {
+function listiscore_missing_gd_notice() {
 	echo '<div class="notice notice-error"><p>';
-	esc_html_e( 'Listing Health Score requires the GeoDirectory plugin to be installed and active.', 'listing-health-score' );
+	esc_html_e( 'Listing Health Score requires the GeoDirectory plugin to be installed and active.', 'listiscore' );
 	echo '</p></div>';
 }
 
 /**
  * Clear scheduled events on deactivation.
  */
-function lhs_deactivate() {
-	wp_clear_scheduled_hook( 'lhs_daily_recalc' );
+function listiscore_deactivate() {
+	wp_clear_scheduled_hook( 'listiscore_daily_recalc' );
 }
-register_deactivation_hook( LHS_FILE, 'lhs_deactivate' );
+register_deactivation_hook( LISTISCORE_FILE, 'listiscore_deactivate' );

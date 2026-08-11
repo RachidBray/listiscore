@@ -5,7 +5,7 @@
  * Adds a sortable "Health" column with a colored badge to every
  * GeoDirectory CPT list table. Instant visual feedback for admins.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Admin_Column class.
+ * ListiScore_Admin_Column class.
  */
-class LHS_Admin_Column {
+class ListiScore_Admin_Column {
 
 	/**
 	 * Register the column, its sorting, and its styles on every GD CPT list table.
@@ -28,7 +28,7 @@ class LHS_Admin_Column {
 		}
 
 		add_action( 'pre_get_posts', array( __CLASS__, 'handle_sorting' ) );
-		add_action( 'admin_head', array( __CLASS__, 'badge_styles' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'badge_styles' ) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class LHS_Admin_Column {
 	 * @return string[]
 	 */
 	public static function add_column( $columns ) {
-		$columns['lhs_score'] = __( 'Health', 'listing-health-score' );
+		$columns['listiscore_score'] = __( 'Health', 'listiscore' );
 		return $columns;
 	}
 
@@ -49,19 +49,19 @@ class LHS_Admin_Column {
 	 * @param int    $post_id Listing post ID.
 	 */
 	public static function render_column( $column, $post_id ) {
-		if ( 'lhs_score' !== $column ) {
+		if ( 'listiscore_score' !== $column ) {
 			return;
 		}
 
-		$score = LHS_Scorer::get_score( $post_id );
+		$score = ListiScore_Scorer::get_score( $post_id );
 		if ( false === $score ) {
 			echo '&mdash;';
 			return;
 		}
 
-		$band = LHS_Scorer::get_band( $score );
+		$band = ListiScore_Scorer::get_band( $score );
 		printf(
-			'<span class="lhs-badge lhs-badge--%1$s">%2$d</span>',
+			'<span class="listiscore-badge listiscore-badge--%1$s">%2$d</span>',
 			esc_attr( $band ),
 			(int) $score
 		);
@@ -74,7 +74,7 @@ class LHS_Admin_Column {
 	 * @return string[]
 	 */
 	public static function sortable_column( $columns ) {
-		$columns['lhs_score'] = 'lhs_score';
+		$columns['listiscore_score'] = 'listiscore_score';
 		return $columns;
 	}
 
@@ -87,25 +87,29 @@ class LHS_Admin_Column {
 		if ( ! is_admin() || ! $query->is_main_query() ) {
 			return;
 		}
-		if ( 'lhs_score' !== $query->get( 'orderby' ) ) {
+		if ( 'listiscore_score' !== $query->get( 'orderby' ) ) {
 			return;
 		}
 
-		$query->set( 'meta_key', LHS_Scorer::META_SCORE ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- intentional: sorts the admin list table by our own score meta.
+		$query->set( 'meta_key', ListiScore_Scorer::META_SCORE ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- intentional: sorts the admin list table by our own score meta.
 		$query->set( 'orderby', 'meta_value_num' );
 	}
 
 	/**
-	 * Output the badge color styles on GD CPT admin screens.
+	 * Enqueue the badge color styles on GD CPT admin screens.
 	 */
 	public static function badge_styles() {
 		$screen = get_current_screen();
 		if ( ! $screen || ! in_array( $screen->post_type, geodir_get_posttypes(), true ) ) {
 			return;
 		}
-		?>
-		<style>
-			.lhs-badge {
+
+		wp_register_style( 'listiscore-admin-column', false, array(), LISTISCORE_VERSION );
+		wp_enqueue_style( 'listiscore-admin-column' );
+
+		wp_add_inline_style(
+			'listiscore-admin-column',
+			'.listiscore-badge {
 				display: inline-block;
 				min-width: 34px;
 				padding: 2px 8px;
@@ -114,10 +118,9 @@ class LHS_Admin_Column {
 				text-align: center;
 				color: #fff;
 			}
-			.lhs-badge--good { background: #00a32a; }
-			.lhs-badge--ok   { background: #dba617; }
-			.lhs-badge--poor { background: #d63638; }
-		</style>
-		<?php
+			.listiscore-badge--good { background: #00a32a; }
+			.listiscore-badge--ok   { background: #dba617; }
+			.listiscore-badge--poor { background: #d63638; }'
+		);
 	}
 }

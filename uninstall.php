@@ -2,22 +2,22 @@
 /**
  * Uninstall Listing Health Score.
  *
- * Deletes the `lhs_settings` option, every `_lhs_*` post meta key this
+ * Deletes the `listiscore_settings` option, every `_listiscore_*` post meta key this
  * plugin has ever written, and clears the daily recalculation cron event.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-delete_option( 'lhs_settings' );
+delete_option( 'listiscore_settings' );
 
-$meta_keys = array( '_lhs_score', '_lhs_breakdown', '_lhs_calculated_at', '_lhs_settings_version' );
+$listiscore_meta_keys = array( '_listiscore_score', '_listiscore_breakdown', '_listiscore_calculated_at', '_listiscore_settings_version' );
 
-foreach ( $meta_keys as $meta_key ) {
-	delete_post_meta_by_key( $meta_key );
+foreach ( $listiscore_meta_keys as $listiscore_meta_key ) {
+	delete_post_meta_by_key( $listiscore_meta_key );
 }
 
-wp_clear_scheduled_hook( 'lhs_daily_recalc' );
+wp_clear_scheduled_hook( 'listiscore_daily_recalc' );

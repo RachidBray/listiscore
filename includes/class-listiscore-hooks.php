@@ -5,7 +5,7 @@
  * Keeps scores in sync when listings change and reviews come in, and runs a
  * small daily batch so freshness decay stays accurate.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Hooks class.
+ * ListiScore_Hooks class.
  */
-class LHS_Hooks {
+class ListiScore_Hooks {
 
 	/**
 	 * Register all recalculation hooks.
@@ -32,9 +32,9 @@ class LHS_Hooks {
 		add_action( 'transition_comment_status', array( __CLASS__, 'on_comment_status' ), 10, 3 );
 
 		// Daily batch recalc for freshness decay.
-		add_action( 'lhs_daily_recalc', array( __CLASS__, 'daily_batch' ) );
-		if ( ! wp_next_scheduled( 'lhs_daily_recalc' ) ) {
-			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'lhs_daily_recalc' );
+		add_action( 'listiscore_daily_recalc', array( __CLASS__, 'daily_batch' ) );
+		if ( ! wp_next_scheduled( 'listiscore_daily_recalc' ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'listiscore_daily_recalc' );
 		}
 	}
 
@@ -64,14 +64,14 @@ class LHS_Hooks {
 		if ( 'publish' !== $post->post_status ) {
 			return;
 		}
-		if ( ! LHS_Scorer::is_gd_listing( $post_id ) ) {
+		if ( ! ListiScore_Scorer::is_gd_listing( $post_id ) ) {
 			return;
 		}
 		// Defer to shutdown so GD detail table writes are done first.
 		add_action(
 			'shutdown',
 			function () use ( $post_id ) {
-				LHS_Scorer::calculate( $post_id );
+				ListiScore_Scorer::calculate( $post_id );
 			}
 		);
 	}
@@ -107,7 +107,7 @@ class LHS_Hooks {
 	 * @param int $post_id Post ID.
 	 */
 	protected static function maybe_recalc_for_comment( $post_id ) {
-		if ( LHS_Scorer::is_gd_listing( $post_id ) ) {
+		if ( ListiScore_Scorer::is_gd_listing( $post_id ) ) {
 			self::recalc( $post_id );
 		}
 	}
@@ -118,7 +118,7 @@ class LHS_Hooks {
 	 * @param int $post_id Listing post ID.
 	 */
 	public static function recalc( $post_id ) {
-		LHS_Scorer::calculate( $post_id );
+		ListiScore_Scorer::calculate( $post_id );
 	}
 
 	/**
@@ -131,7 +131,7 @@ class LHS_Hooks {
 		 *
 		 * @param int $batch_size Number of listings per batch. Default 200.
 		 */
-		$batch_size = (int) apply_filters( 'lhs_daily_batch_size', 200 );
+		$batch_size = (int) apply_filters( 'listiscore_daily_batch_size', 200 );
 
 		$query = new WP_Query(
 			array(
@@ -141,13 +141,13 @@ class LHS_Hooks {
 				'fields'         => 'ids',
 				'orderby'        => 'meta_value_num',
 				'order'          => 'ASC',
-				'meta_key'       => LHS_Scorer::META_UPDATED, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- intentional: finds the stalest listings, batched via lhs_daily_batch_size.
+				'meta_key'       => ListiScore_Scorer::META_UPDATED, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- intentional: finds the stalest listings, batched via listiscore_daily_batch_size.
 				'no_found_rows'  => true,
 			)
 		);
 
 		foreach ( $query->posts as $post_id ) {
-			LHS_Scorer::calculate( $post_id );
+			ListiScore_Scorer::calculate( $post_id );
 		}
 	}
 }

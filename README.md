@@ -1,4 +1,4 @@
-# Listing Health Score for GeoDirectory
+# ListiScore - Listing Health Score for GeoDirectory
 
 ![CI](https://github.com/RachidBray/listing-health-score/actions/workflows/ci.yml/badge.svg)
 [![Latest release](https://img.shields.io/github/v/release/RachidBray/listing-health-score)](https://github.com/RachidBray/listing-health-score/releases/latest)
@@ -7,7 +7,7 @@ A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/?ref=200/) 
 
 - **Admin column**: a sortable, color-coded Health column on every GeoDirectory listing type's admin list table.
 - **Settings tab**: a "Health Score" tab inside GeoDirectory's own settings UI to enable/disable criteria, reweight them, and tune targets and score-band thresholds.
-- **Owner widget**: a widget / `[lhs_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
+- **Owner widget**: a widget / `[listiscore_health]` shortcode / Gutenberg block showing the score, band, and a recommendations list sorted by potential score percentage gain, visible only to the listing owner and admins.
 
 ![The Health Score settings tab and the owner-facing recommendations widget](screenshot.png)
 
@@ -21,7 +21,7 @@ composer test   # PHPUnit
 
 ## Releasing
 
-Version numbers are kept in three places and must match exactly: the plugin header and `LHS_VERSION` constant in `listing-health-score.php`, and `Stable tag` in `readme.txt`. To cut a release:
+Version numbers are kept in three places and must match exactly: the plugin header and `LISTISCORE_VERSION` constant in `listiscore.php`, and `Stable tag` in `readme.txt`. To cut a release:
 
 1. Bump all three to the same version and update the changelog in `readme.txt`.
 2. Commit, then tag: `git tag v1.2.3 && git push origin v1.2.3`.

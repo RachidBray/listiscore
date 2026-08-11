@@ -1,5 +1,5 @@
 {
-  "name": "addictedtoweb/listing-health-score",
+  "name": "addictedtoweb/listiscore",
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.0",
     "phpcompatibility/phpcompatibility-wp": "^2.1",

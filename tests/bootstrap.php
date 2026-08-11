@@ -6,7 +6,7 @@
  * WP functions per test instead, so the suite stays fast and isolated from
  * any particular WP/GeoDirectory install.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 // Defined first (not a require/include) so PHPCS's file-doc-comment sniff
@@ -33,8 +33,8 @@ require_once __DIR__ . '/../vendor/brain/monkey/inc/patchwork-loader.php';
 
 require_once __DIR__ . '/wp-stubs.php';
 
-require_once __DIR__ . '/../includes/class-lhs-settings.php';
-require_once __DIR__ . '/../includes/class-lhs-criteria.php';
-require_once __DIR__ . '/../includes/class-lhs-scorer.php';
+require_once __DIR__ . '/../includes/class-listiscore-settings.php';
+require_once __DIR__ . '/../includes/class-listiscore-criteria.php';
+require_once __DIR__ . '/../includes/class-listiscore-scorer.php';
 
 require_once __DIR__ . '/TestCase.php';

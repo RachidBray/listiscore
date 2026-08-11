@@ -2,7 +2,7 @@
 /**
  * Injects the Health Score tab into GeoDirectory's settings UI.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Admin_Settings class.
+ * ListiScore_Admin_Settings class.
  */
-class LHS_Admin_Settings {
+class ListiScore_Admin_Settings {
 
 	/**
 	 * Hook the settings page into GD's settings pages list.
@@ -28,7 +28,7 @@ class LHS_Admin_Settings {
 	 * @return GeoDir_Settings_Page[]
 	 */
 	public static function add_settings_page( $settings_pages ) {
-		$settings_pages[] = include LHS_DIR . 'includes/admin/settings/class-lhs-settings-health-score.php';
+		$settings_pages[] = include LISTISCORE_DIR . 'includes/admin/settings/class-listiscore-settings-health-score.php';
 
 		return $settings_pages;
 	}

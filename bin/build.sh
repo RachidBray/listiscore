@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Builds a clean, wp.org-ready copy of the plugin (respecting .distignore)
-# into build/listing-health-score/, then zips it.
+# into build/listiscore/, then zips it.
 #
 # Starts from `git archive` (exactly what's committed at HEAD), not a plain
 # directory copy: local-only files that exist on disk but were never meant
@@ -21,7 +21,7 @@
 
 set -euo pipefail
 
-SLUG="listing-health-score"
+SLUG="listiscore"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="$ROOT_DIR/build"
 DEST_DIR="$BUILD_DIR/$SLUG"

@@ -3,11 +3,11 @@
  * Admin list table tools: filter listings by health band, and bulk
  * recalculate scores for selected listings.
  *
- * Kept separate from LHS_Admin_Column, which only owns the Health column
+ * Kept separate from ListiScore_Admin_Column, which only owns the Health column
  * itself — these two hooks are a distinct concern (query filtering / bulk
  * actions) even though they touch the same list tables.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,16 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Admin_List_Table class.
+ * ListiScore_Admin_List_Table class.
  */
-class LHS_Admin_List_Table {
+class ListiScore_Admin_List_Table {
 
 	/**
 	 * Bulk action slug.
 	 *
 	 * @var string
 	 */
-	const BULK_ACTION = 'lhs_recalculate';
+	const BULK_ACTION = 'listiscore_recalculate';
 
 	/**
 	 * Register hooks for every GD CPT list table.
@@ -51,12 +51,12 @@ class LHS_Admin_List_Table {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view filter, matches WP core's own list table dropdowns (category, post status, etc), none of which use a nonce.
-		$selected = isset( $_GET['lhs_band'] ) ? sanitize_key( wp_unslash( $_GET['lhs_band'] ) ) : '';
+		$selected = isset( $_GET['listiscore_band'] ) ? sanitize_key( wp_unslash( $_GET['listiscore_band'] ) ) : '';
 
 		$bands = self::bands();
 		?>
-		<select name="lhs_band">
-			<option value=""><?php esc_html_e( 'All health bands', 'listing-health-score' ); ?></option>
+		<select name="listiscore_band">
+			<option value=""><?php esc_html_e( 'All health bands', 'listiscore' ); ?></option>
 			<?php foreach ( $bands as $band => $label ) : ?>
 				<option value="<?php echo esc_attr( $band ); ?>" <?php selected( $selected, $band ); ?>><?php echo esc_html( $label ); ?></option>
 			<?php endforeach; ?>
@@ -75,7 +75,7 @@ class LHS_Admin_List_Table {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view filter, matches WP core's own list table dropdowns.
-		$band = isset( $_GET['lhs_band'] ) ? sanitize_key( wp_unslash( $_GET['lhs_band'] ) ) : '';
+		$band = isset( $_GET['listiscore_band'] ) ? sanitize_key( wp_unslash( $_GET['listiscore_band'] ) ) : '';
 
 		if ( ! isset( self::bands()[ $band ] ) ) {
 			return;
@@ -90,19 +90,19 @@ class LHS_Admin_List_Table {
 		 *
 		 * @param int $threshold Minimum score for the "good" band.
 		 */
-		$good = (int) apply_filters( 'lhs_band_good_threshold', 80 );
+		$good = (int) apply_filters( 'listiscore_band_good_threshold', 80 );
 
 		/**
 		 * Filter the "ok" band threshold.
 		 *
 		 * @param int $threshold Minimum score for the "ok" band.
 		 */
-		$ok = (int) apply_filters( 'lhs_band_ok_threshold', 50 );
+		$ok = (int) apply_filters( 'listiscore_band_ok_threshold', 50 );
 
 		switch ( $band ) {
 			case 'good':
 				$meta_query = array(
-					'key'     => LHS_Scorer::META_SCORE,
+					'key'     => ListiScore_Scorer::META_SCORE,
 					'value'   => $good,
 					'compare' => '>=',
 					'type'    => 'NUMERIC',
@@ -110,7 +110,7 @@ class LHS_Admin_List_Table {
 				break;
 			case 'ok':
 				$meta_query = array(
-					'key'     => LHS_Scorer::META_SCORE,
+					'key'     => ListiScore_Scorer::META_SCORE,
 					'value'   => array( $ok, max( $ok, $good - 1 ) ),
 					'compare' => 'BETWEEN',
 					'type'    => 'NUMERIC',
@@ -118,7 +118,7 @@ class LHS_Admin_List_Table {
 				break;
 			default: // poor.
 				$meta_query = array(
-					'key'     => LHS_Scorer::META_SCORE,
+					'key'     => ListiScore_Scorer::META_SCORE,
 					'value'   => $ok,
 					'compare' => '<',
 					'type'    => 'NUMERIC',
@@ -136,15 +136,21 @@ class LHS_Admin_List_Table {
 	 * @return string[]
 	 */
 	public static function add_bulk_action( $actions ) {
-		$actions[ self::BULK_ACTION ] = __( 'Recalculate Health Score', 'listing-health-score' );
+		$actions[ self::BULK_ACTION ] = __( 'Recalculate Health Score', 'listiscore' );
 		return $actions;
 	}
 
 	/**
-	 * Recalculate the score for every selected listing.
+	 * Recalculate the score for every selected listing the current user is
+	 * actually allowed to edit.
 	 *
 	 * WP core's own bulk-action handling already verifies the request nonce
-	 * and the current user's edit_posts capability before this ever runs.
+	 * and the current user's generic edit_posts capability before this ever
+	 * runs, but that's a blanket "can edit posts of this type" check, not
+	 * per-post -- it doesn't stop a lower-privileged user (e.g. one who can
+	 * only edit their own listings) from including someone else's post ID in
+	 * the bulk selection. Recalculating isn't destructive, but it does write
+	 * post meta, so each post still needs its own capability check.
 	 *
 	 * @param string $redirect_to Redirect URL.
 	 * @param string $action_name Bulk action name.
@@ -156,11 +162,18 @@ class LHS_Admin_List_Table {
 			return $redirect_to;
 		}
 
+		$recalculated = 0;
+
 		foreach ( $post_ids as $post_id ) {
-			LHS_Scorer::calculate( $post_id );
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
+			ListiScore_Scorer::calculate( $post_id );
+			++$recalculated;
 		}
 
-		return add_query_arg( 'lhs_recalculated', count( $post_ids ), $redirect_to );
+		return add_query_arg( 'listiscore_recalculated', $recalculated, $redirect_to );
 	}
 
 	/**
@@ -168,19 +181,19 @@ class LHS_Admin_List_Table {
 	 */
 	public static function bulk_action_notice() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice trigger off a redirect query arg we set ourselves; matches WP core's own bulk-action notice pattern.
-		if ( empty( $_GET['lhs_recalculated'] ) ) {
+		if ( empty( $_GET['listiscore_recalculated'] ) ) {
 			return;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only notice trigger, see above.
-		$count = absint( wp_unslash( $_GET['lhs_recalculated'] ) );
+		$count = absint( wp_unslash( $_GET['listiscore_recalculated'] ) );
 
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
 			esc_html(
 				sprintf(
 					/* translators: %d: number of listings recalculated. */
-					_n( 'Recalculated the health score for %d listing.', 'Recalculated the health score for %d listings.', $count, 'listing-health-score' ),
+					_n( 'Recalculated the health score for %d listing.', 'Recalculated the health score for %d listings.', $count, 'listiscore' ),
 					$count
 				)
 			)
@@ -194,9 +207,9 @@ class LHS_Admin_List_Table {
 	 */
 	private static function bands() {
 		return array(
-			'good' => __( 'Good', 'listing-health-score' ),
-			'ok'   => __( 'Needs improvement', 'listing-health-score' ),
-			'poor' => __( 'Poor', 'listing-health-score' ),
+			'good' => __( 'Good', 'listiscore' ),
+			'ok'   => __( 'Needs improvement', 'listiscore' ),
+			'poor' => __( 'Poor', 'listiscore' ),
 		);
 	}
 }

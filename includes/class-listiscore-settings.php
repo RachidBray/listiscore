@@ -2,12 +2,12 @@
 /**
  * Settings storage.
  *
- * Everything configurable lives in a single `lhs_settings` option: score band
+ * Everything configurable lives in a single `listiscore_settings` option: score band
  * thresholds, scaling targets, and per-criterion enable/weight overrides.
- * A `version` counter is bumped on every save so `LHS_Scorer` knows to
+ * A `version` counter is bumped on every save so `ListiScore_Scorer` knows to
  * recalculate listings that were scored under an older configuration.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,16 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Settings class.
+ * ListiScore_Settings class.
  */
-class LHS_Settings {
+class ListiScore_Settings {
 
 	/**
 	 * The option name settings are stored under.
 	 *
 	 * @var string
 	 */
-	const OPTION = 'lhs_settings';
+	const OPTION = 'listiscore_settings';
 
 	/**
 	 * Register filters that let saved settings override the criteria
@@ -32,13 +32,13 @@ class LHS_Settings {
 	 */
 	public static function init() {
 		$filter_map = array(
-			'lhs_description_target_length' => 'description_target_length',
-			'lhs_photos_target_count'       => 'photos_target_count',
-			'lhs_reviews_target_count'      => 'reviews_target_count',
-			'lhs_social_target_count'       => 'social_target_count',
-			'lhs_freshness_max_days'        => 'freshness_max_days',
-			'lhs_band_good_threshold'       => 'band_good',
-			'lhs_band_ok_threshold'         => 'band_ok',
+			'listiscore_description_target_length' => 'description_target_length',
+			'listiscore_photos_target_count'       => 'photos_target_count',
+			'listiscore_reviews_target_count'      => 'reviews_target_count',
+			'listiscore_social_target_count'       => 'social_target_count',
+			'listiscore_freshness_max_days'        => 'freshness_max_days',
+			'listiscore_band_good_threshold'       => 'band_good',
+			'listiscore_band_ok_threshold'         => 'band_ok',
 		);
 
 		foreach ( $filter_map as $filter => $key ) {
@@ -53,7 +53,7 @@ class LHS_Settings {
 
 	/**
 	 * Default settings, excluding criteria overrides (those come from
-	 * `LHS_Criteria::get_defaults()` and are only ever partially overridden).
+	 * `ListiScore_Criteria::get_defaults()` and are only ever partially overridden).
 	 *
 	 * @return array
 	 */

@@ -2,10 +2,10 @@
 /**
  * Listing Health Score widget.
  *
- * A single Super Duper class gives us a widget, the `[lhs_health]` shortcode,
+ * A single Super Duper class gives us a widget, the `[listiscore_health]` shortcode,
  * and a Gutenberg block for free.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Widget_Health_Score class.
+ * ListiScore_Widget_Health_Score class.
  */
-class LHS_Widget_Health_Score extends WP_Super_Duper {
+class ListiScore_Widget_Health_Score extends WP_Super_Duper {
 
 	/**
 	 * Register this widget with GeoDirectory.
@@ -36,16 +36,16 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 */
 	public function __construct() {
 		$options = array(
-			'textdomain'     => 'listing-health-score',
+			'textdomain'     => 'listiscore',
 			'block-icon'     => 'fas fa-heartbeat',
 			'block-category' => 'geodirectory',
 			'block-keywords' => "['health','score','geodir','listing']",
 			'class_name'     => __CLASS__,
-			'base_id'        => 'lhs_health',
-			'name'           => __( 'GD > Listing Health Score', 'listing-health-score' ),
+			'base_id'        => 'listiscore_health',
+			'name'           => __( 'GD > Listing Health Score', 'listiscore' ),
 			'widget_ops'     => array(
-				'classname'       => 'lhs-widget-health-score' . ( geodir_design_style() ? ' bsui' : '' ),
-				'description'     => esc_html__( 'Displays the listing health score, band, and recommendations.', 'listing-health-score' ),
+				'classname'       => 'listiscore-widget-health-score' . ( geodir_design_style() ? ' bsui' : '' ),
+				'description'     => esc_html__( 'Displays the listing health score, band, and recommendations.', 'listiscore' ),
 				'geodirectory'    => true,
 				'gd_wgt_showhide' => 'show_on',
 				'gd_wgt_restrict' => array( 'gd-detail' ),
@@ -63,25 +63,25 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	public function set_arguments() {
 		return array(
 			'title'                => array(
-				'title'    => __( 'Title:', 'listing-health-score' ),
-				'desc'     => __( 'Leave blank for no title.', 'listing-health-score' ),
+				'title'    => __( 'Title:', 'listiscore' ),
+				'desc'     => __( 'Leave blank for no title.', 'listiscore' ),
 				'type'     => 'text',
 				'default'  => '',
 				'desc_tip' => true,
 				'advanced' => false,
 			),
 			'id'                   => array(
-				'title'       => __( 'Post ID:', 'listing-health-score' ),
-				'desc'        => __( 'Leave blank to use the current listing.', 'listing-health-score' ),
+				'title'       => __( 'Post ID:', 'listiscore' ),
+				'desc'        => __( 'Leave blank to use the current listing.', 'listiscore' ),
 				'type'        => 'number',
-				'placeholder' => __( 'Leave blank to use current post id.', 'listing-health-score' ),
+				'placeholder' => __( 'Leave blank to use current post id.', 'listiscore' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'advanced'    => true,
 			),
 			'show_recommendations' => array(
-				'title'    => __( 'Show recommendations:', 'listing-health-score' ),
-				'desc'     => __( 'Show the list of tips sorted by potential score percentage gain.', 'listing-health-score' ),
+				'title'    => __( 'Show recommendations:', 'listiscore' ),
+				'desc'     => __( 'Show the list of tips sorted by potential score percentage gain.', 'listiscore' ),
 				'type'     => 'checkbox',
 				'value'    => '1',
 				'default'  => 1,
@@ -121,21 +121,21 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 			$post_id = 0;
 		}
 
-		if ( ! $post_id || ! LHS_Scorer::is_gd_listing( $post_id ) ) {
-			return $is_preview ? $this->preview_placeholder( __( 'No listing found to preview.', 'listing-health-score' ) ) : '';
+		if ( ! $post_id || ! ListiScore_Scorer::is_gd_listing( $post_id ) ) {
+			return $is_preview ? $this->preview_placeholder( __( 'No listing found to preview.', 'listiscore' ) ) : '';
 		}
 
 		if ( ! $is_preview && ! self::current_user_can_view( $post_id ) ) {
 			return '';
 		}
 
-		$score = LHS_Scorer::get_score( $post_id );
+		$score = ListiScore_Scorer::get_score( $post_id );
 		if ( false === $score ) {
-			return $is_preview ? $this->preview_placeholder( __( 'Not a scoreable listing.', 'listing-health-score' ) ) : '';
+			return $is_preview ? $this->preview_placeholder( __( 'Not a scoreable listing.', 'listiscore' ) ) : '';
 		}
 
-		$band            = LHS_Scorer::get_band( $score );
-		$recommendations = ! empty( $args['show_recommendations'] ) ? LHS_Scorer::get_recommendations( $post_id ) : array();
+		$band            = ListiScore_Scorer::get_band( $score );
+		$recommendations = ! empty( $args['show_recommendations'] ) ? ListiScore_Scorer::get_recommendations( $post_id ) : array();
 
 		ob_start();
 		$this->render( $score, $band, $recommendations, $args['title'] );
@@ -147,7 +147,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 *
 	 * @param int     $score           Score 0-100.
 	 * @param string  $band            good|ok|poor.
-	 * @param array[] $recommendations Tips from LHS_Scorer::get_recommendations().
+	 * @param array[] $recommendations Tips from ListiScore_Scorer::get_recommendations().
 	 * @param string  $title           Optional widget title.
 	 */
 	private function render( $score, $band, $recommendations, $title ) {
@@ -178,16 +178,16 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 		$bar_class   = 'progress-bar bg-' . $color;
 
 		if ( $is_complete ) {
-			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
-			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listing-health-score' );
+			$headline = __( 'Your profile is fully optimized! 🚀', 'listiscore' );
+			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listiscore' );
 		} else {
-			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
-			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+			$headline = __( "You're only a few steps away! 🎉", 'listiscore' );
+			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listiscore' );
 		}
 
 		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );
 		?>
-		<div class="lhs-health-score">
+		<div class="listiscore-health-score">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
@@ -212,16 +212,16 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 					<span class="fw-semibold text-<?php echo esc_attr( $color ); ?>">
 						<?php
 						/* translators: %d: score percentage complete. */
-						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
+						echo esc_html( sprintf( __( '%d%% Complete', 'listiscore' ), $score ) );
 						?>
 					</span>
 					<span class="text-muted">
 						<?php
 						if ( $is_complete ) {
-							esc_html_e( 'All steps done', 'listing-health-score' );
+							esc_html_e( 'All steps done', 'listiscore' );
 						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
-							echo esc_html( sprintf( __( '%d%% left', 'listing-health-score' ), $remaining ) );
+							echo esc_html( sprintf( __( '%d%% left', 'listiscore' ), $remaining ) );
 						}
 						?>
 					</span>
@@ -244,7 +244,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							<span class="badge bg-white text-dark border px-3 py-2 rounded-2 fw-bold shadow-sm">
 								<?php
 								/* translators: %d: potential score percentage gained. */
-								echo esc_html( sprintf( __( '+%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								echo esc_html( sprintf( __( '+%d%%', 'listiscore' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</div>
@@ -270,17 +270,17 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 		$is_complete = ( 100 === $score );
 
 		if ( $is_complete ) {
-			$headline = __( 'Your profile is fully optimized! 🚀', 'listing-health-score' );
-			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listing-health-score' );
+			$headline = __( 'Your profile is fully optimized! 🚀', 'listiscore' );
+			$subhead  = __( 'Great job! Your profile is ready to attract more visitors.', 'listiscore' );
 		} else {
-			$headline = __( "You're only a few steps away! 🎉", 'listing-health-score' );
-			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listing-health-score' );
+			$headline = __( "You're only a few steps away! 🎉", 'listiscore' );
+			$subhead  = __( 'Complete a few more steps to increase your visibility and earn more customer trust.', 'listiscore' );
 		}
 
 		$show_recommendations = ( ! $is_complete && ! empty( $recommendations ) );
 		$header_style         = 'text-align:center;' . ( $show_recommendations ? 'margin-bottom:24px;' : '' );
 		?>
-		<div class="lhs-health-score lhs-health-score--legacy">
+		<div class="listiscore-health-score listiscore-health-score--legacy">
 			<?php if ( $title ) : ?>
 				<h3 class="widget-title"><?php echo esc_html( $title ); ?></h3>
 			<?php endif; ?>
@@ -304,16 +304,16 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 					<span style="font-weight:600;color:<?php echo esc_attr( $hex ); ?>;">
 						<?php
 						/* translators: %d: score percentage complete. */
-						echo esc_html( sprintf( __( '%d%% Complete', 'listing-health-score' ), $score ) );
+						echo esc_html( sprintf( __( '%d%% Complete', 'listiscore' ), $score ) );
 						?>
 					</span>
 					<span style="color:#666;">
 						<?php
 						if ( $is_complete ) {
-							esc_html_e( 'All steps done', 'listing-health-score' );
+							esc_html_e( 'All steps done', 'listiscore' );
 						} else {
 							/* translators: %d: percentage remaining to reach a full score. */
-							echo esc_html( sprintf( __( '%d%% left', 'listing-health-score' ), $remaining ) );
+							echo esc_html( sprintf( __( '%d%% left', 'listiscore' ), $remaining ) );
 						}
 						?>
 					</span>
@@ -336,7 +336,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 							<span style="background:#fff;color:#0b0b0b;border:1px solid #ddd;padding:4px 10px;border-radius:6px;font-weight:700;white-space:nowrap;">
 								<?php
 								/* translators: %d: potential score percentage gained. */
-								echo esc_html( sprintf( __( '+%d%%', 'listing-health-score' ), $tip['potential_percentage'] ) );
+								echo esc_html( sprintf( __( '+%d%%', 'listiscore' ), $tip['potential_percentage'] ) );
 								?>
 							</span>
 						</div>
@@ -355,7 +355,7 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 * @return string
 	 */
 	private function preview_placeholder( $message ) {
-		return '<div class="lhs-health-score lhs-health-score--placeholder">' . esc_html( $message ) . '</div>';
+		return '<div class="listiscore-health-score listiscore-health-score--placeholder">' . esc_html( $message ) . '</div>';
 	}
 
 	/**
@@ -423,9 +423,9 @@ class LHS_Widget_Health_Score extends WP_Super_Duper {
 	 */
 	private function band_label( $band ) {
 		$labels = array(
-			'good' => __( 'Good', 'listing-health-score' ),
-			'ok'   => __( 'Needs improvement', 'listing-health-score' ),
-			'poor' => __( 'Poor', 'listing-health-score' ),
+			'good' => __( 'Good', 'listiscore' ),
+			'ok'   => __( 'Needs improvement', 'listiscore' ),
+			'poor' => __( 'Poor', 'listiscore' ),
 		);
 
 		return isset( $labels[ $band ] ) ? $labels[ $band ] : '';

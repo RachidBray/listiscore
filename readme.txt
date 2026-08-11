@@ -1,4 +1,4 @@
-=== Listing Health Score for GeoDirectory ===
+=== ListiScore - Listing Health Score for GeoDirectory ===
 Contributors: tartamata
 Tags: geodirectory, business directory, listings, seo, gamification
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Scores every GeoDirectory listing 0-100 based on completeness and quality, with 
 
 == Description ==
 
-Listing Health Score adds a gamified completeness score to every listing in your [GeoDirectory](https://wpgeodirectory.com/) directory. Admins get an at-a-glance view of which listings need attention; listing owners get a clear, prioritized checklist of what to fix next for the biggest score gain.
+ListiScore adds a gamified completeness score to every listing in your [GeoDirectory](https://wpgeodirectory.com/) directory. Admins get an at-a-glance view of which listings need attention; listing owners get a clear, prioritized checklist of what to fix next for the biggest score gain.
 
 Source code and development happen in the open on [GitHub](https://github.com/RachidBray/listing-health-score).
 
@@ -21,7 +21,7 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 * **0-100 health score** for every listing, calculated from a weighted set of criteria: featured image, logo, description length, opening hours, phone, email, website, social links, photo gallery, review count, and freshness (how recently the listing was updated).
 * **Admin column**: a sortable, color-coded Health column on every GeoDirectory post type's admin list table, so admins can spot and sort by low-scoring listings instantly.
 * **Admin filter + bulk recalculate**: filter any listing type's admin list table by health band (Good / Needs improvement / Poor), and recalculate the score for any selection via the "Recalculate Health Score" bulk action.
-* **Owner-facing widget / shortcode / block**: `[lhs_health]` (also available as a widget and a Gutenberg block) shows a "complete your listing" checklist: percent-complete progress bar and a recommendations list sorted by potential score percentage gain, so owners know exactly what to fix first. Visible only to the listing owner and site admins.
+* **Owner-facing widget / shortcode / block**: `[listiscore_health]` (also available as a widget and a Gutenberg block) shows a "complete your listing" checklist: percent-complete progress bar and a recommendations list sorted by potential score percentage gain, so owners know exactly what to fix first. Visible only to the listing owner and site admins.
 * **Settings tab inside GeoDirectory's own settings UI**: enable or disable individual criteria, reweight them, and tune scaling targets (description length, photo/review/social counts, freshness decay window) and the score-band thresholds, all without touching code.
 * **Automatic recalculation**: scores update when a listing is saved, when reviews are added or change status, and via a daily batched cron job so freshness decay stays accurate even without new activity. Changing settings automatically invalidates and lazily recalculates affected scores.
 * **Developer-friendly**: every scaling target, threshold, and the criteria list itself are filterable; a `lhs_score_updated` action fires whenever a score changes.
@@ -29,7 +29,7 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 
 = Requirements =
 
-* [GeoDirectory](https://wordpress.org/plugins/geodirectory/) v2 or later must be installed and active. Listing Health Score does nothing without it.
+* [GeoDirectory](https://wordpress.org/plugins/geodirectory/) v2 or later must be installed and active. ListiScore does nothing without it.
 
 == Installation ==
 
@@ -37,7 +37,7 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 2. Upload the `listing-health-score` folder to `/wp-content/plugins/`, or install it through the WordPress admin's Plugins > Add New screen.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
 4. Visit GeoDirectory > Settings > Health Score to adjust criteria, weights, and targets if you don't want the defaults.
-5. Add the `[lhs_health]` shortcode, the "Listing Health Score" widget, or its Gutenberg block to your single listing template so owners can see their score and recommendations.
+5. Add the `[listiscore_health]` shortcode, the "ListiScore" widget, or its Gutenberg block to your single listing template so owners can see their score and recommendations.
 
 == Frequently Asked Questions ==
 
@@ -59,7 +59,7 @@ No. The health score is informational only, shown to the listing owner and site 
 
 = Does this work without GeoDirectory? =
 
-No. Listing Health Score is a GeoDirectory addon and requires GeoDirectory to be installed and active; it will show an admin notice if it can't detect GeoDirectory.
+No. ListiScore is a GeoDirectory addon and requires GeoDirectory to be installed and active; it will show an admin notice if it can't detect GeoDirectory.
 
 == Screenshots ==
 

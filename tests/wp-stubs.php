@@ -8,7 +8,7 @@
  * included after it activates, and Functions\when() overrides these in
  * individual tests.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

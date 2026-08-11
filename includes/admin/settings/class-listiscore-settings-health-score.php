@@ -2,7 +2,7 @@
 /**
  * Health Score settings tab.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,23 +10,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Settings_Health_Score class.
+ * ListiScore_Settings_Health_Score class.
  */
-class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
+class ListiScore_Settings_Health_Score extends GeoDir_Settings_Page {
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		$this->id    = 'health_score';
-		$this->label = __( 'Health Score', 'listing-health-score' );
+		$this->label = __( 'Health Score', 'listiscore' );
 
 		parent::__construct();
 
 		// Fired by GeoDir_Admin_Settings::output_fields() right before/after
-		// the Criteria section's fields, since 'id' => 'lhs_criteria_options'.
-		add_action( 'geodir_settings_lhs_criteria_options', array( $this, 'render_weight_total' ) );
-		add_action( 'geodir_settings_lhs_criteria_options_end', array( $this, 'render_weight_total_script' ) );
+		// the Criteria section's fields, since 'id' => 'listiscore_criteria_options'.
+		add_action( 'geodir_settings_listiscore_criteria_options', array( $this, 'render_weight_total' ) );
+		add_action( 'geodir_settings_listiscore_criteria_options_end', array( $this, 'render_weight_total_script' ) );
 	}
 
 	/**
@@ -36,19 +36,19 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	 * @return array
 	 */
 	public function get_settings( $current_section = '' ) {
-		$current  = LHS_Settings::get_all();
-		$criteria = LHS_Criteria::get_defaults();
+		$current  = ListiScore_Settings::get_all();
+		$criteria = ListiScore_Criteria::get_defaults();
 
 		$settings   = array();
 		$settings[] = array(
-			'name' => __( 'Score Bands', 'listing-health-score' ),
+			'name' => __( 'Score Bands', 'listiscore' ),
 			'type' => 'title',
-			'desc' => __( 'Thresholds used to color-code the Health column and owner dashboards.', 'listing-health-score' ),
-			'id'   => 'lhs_band_options',
+			'desc' => __( 'Thresholds used to color-code the Health column and owner dashboards.', 'listiscore' ),
+			'id'   => 'listiscore_band_options',
 		);
 		$settings[] = array(
-			'name'              => __( '"Good" threshold', 'listing-health-score' ),
-			'desc'              => __( 'Scores at or above this value are shown as good.', 'listing-health-score' ),
+			'name'              => __( '"Good" threshold', 'listiscore' ),
+			'desc'              => __( 'Scores at or above this value are shown as good.', 'listiscore' ),
 			'id'                => 'band_good',
 			'type'              => 'number',
 			'value'             => $current['band_good'],
@@ -60,8 +60,8 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 			),
 		);
 		$settings[] = array(
-			'name'              => __( '"OK" threshold', 'listing-health-score' ),
-			'desc'              => __( 'Scores at or above this value (and below "Good") are shown as OK. Anything lower is "poor".', 'listing-health-score' ),
+			'name'              => __( '"OK" threshold', 'listiscore' ),
+			'desc'              => __( 'Scores at or above this value (and below "Good") are shown as OK. Anything lower is "poor".', 'listiscore' ),
 			'id'                => 'band_ok',
 			'type'              => 'number',
 			'value'             => $current['band_ok'],
@@ -74,18 +74,18 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		);
 		$settings[] = array(
 			'type' => 'sectionend',
-			'id'   => 'lhs_band_options',
+			'id'   => 'listiscore_band_options',
 		);
 
 		$settings[] = array(
-			'name' => __( 'Targets', 'listing-health-score' ),
+			'name' => __( 'Targets', 'listiscore' ),
 			'type' => 'title',
-			'desc' => __( 'Targets used to calculate partial credit for criteria that scale, such as description length or photo count.', 'listing-health-score' ),
-			'id'   => 'lhs_target_options',
+			'desc' => __( 'Targets used to calculate partial credit for criteria that scale, such as description length or photo count.', 'listiscore' ),
+			'id'   => 'listiscore_target_options',
 		);
 		$settings[] = array(
-			'name'     => __( 'Description target length', 'listing-health-score' ),
-			'desc'     => __( 'Character count that earns full credit for the description criterion.', 'listing-health-score' ),
+			'name'     => __( 'Description target length', 'listiscore' ),
+			'desc'     => __( 'Character count that earns full credit for the description criterion.', 'listiscore' ),
 			'id'       => 'description_target_length',
 			'type'     => 'number',
 			'value'    => $current['description_target_length'],
@@ -93,8 +93,8 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 			'desc_tip' => true,
 		);
 		$settings[] = array(
-			'name'     => __( 'Photos target count', 'listing-health-score' ),
-			'desc'     => __( 'Number of gallery photos that earns full credit.', 'listing-health-score' ),
+			'name'     => __( 'Photos target count', 'listiscore' ),
+			'desc'     => __( 'Number of gallery photos that earns full credit.', 'listiscore' ),
 			'id'       => 'photos_target_count',
 			'type'     => 'number',
 			'value'    => $current['photos_target_count'],
@@ -102,8 +102,8 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 			'desc_tip' => true,
 		);
 		$settings[] = array(
-			'name'     => __( 'Reviews target count', 'listing-health-score' ),
-			'desc'     => __( 'Number of reviews that earns full credit.', 'listing-health-score' ),
+			'name'     => __( 'Reviews target count', 'listiscore' ),
+			'desc'     => __( 'Number of reviews that earns full credit.', 'listiscore' ),
 			'id'       => 'reviews_target_count',
 			'type'     => 'number',
 			'value'    => $current['reviews_target_count'],
@@ -111,8 +111,8 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 			'desc_tip' => true,
 		);
 		$settings[] = array(
-			'name'     => __( 'Social links target count', 'listing-health-score' ),
-			'desc'     => __( 'Number of connected social profiles that earns full credit.', 'listing-health-score' ),
+			'name'     => __( 'Social links target count', 'listiscore' ),
+			'desc'     => __( 'Number of connected social profiles that earns full credit.', 'listiscore' ),
 			'id'       => 'social_target_count',
 			'type'     => 'number',
 			'value'    => $current['social_target_count'],
@@ -120,8 +120,8 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 			'desc_tip' => true,
 		);
 		$settings[] = array(
-			'name'     => __( 'Freshness max days', 'listing-health-score' ),
-			'desc'     => __( 'Days since the last update after which the freshness criterion decays to zero.', 'listing-health-score' ),
+			'name'     => __( 'Freshness max days', 'listiscore' ),
+			'desc'     => __( 'Days since the last update after which the freshness criterion decays to zero.', 'listiscore' ),
 			'id'       => 'freshness_max_days',
 			'type'     => 'number',
 			'value'    => $current['freshness_max_days'],
@@ -130,15 +130,15 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		);
 		$settings[] = array(
 			'type' => 'sectionend',
-			'id'   => 'lhs_target_options',
+			'id'   => 'listiscore_target_options',
 		);
 
 		$settings[] = array(
-			'name' => __( 'Criteria', 'listing-health-score' ),
+			'name' => __( 'Criteria', 'listiscore' ),
 			'type' => 'title',
 			/* translators: %d: number that enabled criteria weights must add up to (always 100). */
-			'desc' => sprintf( __( 'Enable or disable individual criteria and set what percentage of the score each is worth. Enabled criteria must add up to exactly %d.', 'listing-health-score' ), 100 ),
-			'id'   => 'lhs_criteria_options',
+			'desc' => sprintf( __( 'Enable or disable individual criteria and set what percentage of the score each is worth. Enabled criteria must add up to exactly %d.', 'listiscore' ), 100 ),
+			'id'   => 'listiscore_criteria_options',
 		);
 
 		foreach ( $criteria as $id => $criterion ) {
@@ -148,33 +148,33 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 
 			$settings[] = array(
 				/* translators: %s: criterion label, e.g. "Featured image". */
-				'name'              => sprintf( __( 'Enable: %s', 'listing-health-score' ), $criterion['label'] ),
+				'name'              => sprintf( __( 'Enable: %s', 'listiscore' ), $criterion['label'] ),
 				'id'                => "criteria[{$id}][enabled]",
 				'type'              => 'checkbox',
 				'value'             => $enabled ? '1' : '',
 				'default'           => '1',
-				'custom_attributes' => array( 'data-lhs-role' => 'enabled' ),
+				'custom_attributes' => array( 'data-listiscore-role' => 'enabled' ),
 			);
 			$settings[] = array(
 				/* translators: %s: criterion label, e.g. "Featured image". */
-				'name'              => sprintf( __( '%s (%% of score)', 'listing-health-score' ), $criterion['label'] ),
-				'desc'              => __( 'Percentage of the total score this criterion is worth when fully met.', 'listing-health-score' ),
+				'name'              => sprintf( __( '%s (%% of score)', 'listiscore' ), $criterion['label'] ),
+				'desc'              => __( 'Percentage of the total score this criterion is worth when fully met.', 'listiscore' ),
 				'id'                => "criteria[{$id}][weight]",
 				'type'              => 'number',
 				'value'             => $weight,
 				'default'           => (int) $criterion['weight'],
 				'desc_tip'          => true,
 				'custom_attributes' => array(
-					'min'           => 0,
-					'max'           => 100,
-					'data-lhs-role' => 'weight',
+					'min'                  => 0,
+					'max'                  => 100,
+					'data-listiscore-role' => 'weight',
 				),
 			);
 		}
 
 		$settings[] = array(
 			'type' => 'sectionend',
-			'id'   => 'lhs_criteria_options',
+			'id'   => 'listiscore_criteria_options',
 		);
 
 		/**
@@ -183,7 +183,7 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		 * @param array  $settings        Settings fields.
 		 * @param string $current_section Current section.
 		 */
-		return apply_filters( 'lhs_settings_fields', $settings, $current_section );
+		return apply_filters( 'listiscore_settings_fields', $settings, $current_section );
 	}
 
 	/**
@@ -191,7 +191,7 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	 *
 	 * GD's own field renderer (`GeoDir_Admin_Settings::output_fields()`) is
 	 * reused for AyeCode-native markup, but each field carries a precomputed
-	 * `value` read from our own `lhs_settings` option instead of GD's shared
+	 * `value` read from our own `listiscore_settings` option instead of GD's shared
 	 * `geodir_settings` option.
 	 */
 	public function output() {
@@ -207,9 +207,9 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	 */
 	public function render_weight_total() {
 		?>
-		<p id="lhs-weight-total-wrap" style="font-weight: 600;">
-			<?php esc_html_e( 'Total (enabled criteria):', 'listing-health-score' ); ?>
-			<span id="lhs-weight-total">&hellip;</span>%
+		<p id="listiscore-weight-total-wrap" style="font-weight: 600;">
+			<?php esc_html_e( 'Total (enabled criteria):', 'listiscore' ); ?>
+			<span id="listiscore-weight-total">&hellip;</span>%
 		</p>
 		<?php
 	}
@@ -217,50 +217,52 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	/**
 	 * Script that keeps the total indicator in sync as criteria are toggled
 	 * or reweighted, colored using the same validated status hexes as the
-	 * front-end widget (good/critical — see LHS_Widget_Health_Score).
+	 * front-end widget (good/critical — see ListiScore_Widget_Health_Score).
 	 *
 	 * Placed at the *_end hook (after the fields render) so the elements it
 	 * queries for already exist by the time this script tag is reached.
 	 */
 	public function render_weight_total_script() {
-		?>
-		<script>
-		( function () {
-			var wrap  = document.getElementById( 'lhs-weight-total-wrap' );
-			var total = document.getElementById( 'lhs-weight-total' );
-			if ( ! wrap || ! total ) {
-				return;
-			}
+		wp_register_script( 'listiscore-admin-settings', false, array(), LISTISCORE_VERSION, true );
+		wp_enqueue_script( 'listiscore-admin-settings' );
 
-			var enabled = document.querySelectorAll( '[data-lhs-role="enabled"]' );
-			var weights = document.querySelectorAll( '[data-lhs-role="weight"]' );
-
-			function recalc() {
-				var sum = 0;
-				for ( var i = 0; i < weights.length; i++ ) {
-					if ( ! enabled[ i ] || enabled[ i ].checked ) {
-						sum += parseInt( weights[ i ].value, 10 ) || 0;
-					}
+		wp_add_inline_script(
+			'listiscore-admin-settings',
+			'( function () {
+				var wrap  = document.getElementById( "listiscore-weight-total-wrap" );
+				var total = document.getElementById( "listiscore-weight-total" );
+				if ( ! wrap || ! total ) {
+					return;
 				}
-				total.textContent = sum;
-				wrap.style.color = ( 100 === sum ) ? '#0ca30c' : '#d03b3b';
-			}
 
-			for ( var i = 0; i < weights.length; i++ ) {
-				weights[ i ].addEventListener( 'input', recalc );
-			}
-			for ( var i = 0; i < enabled.length; i++ ) {
-				enabled[ i ].addEventListener( 'change', recalc );
-			}
+				var enabled = document.querySelectorAll( \'[data-listiscore-role="enabled"]\' );
+				var weights = document.querySelectorAll( \'[data-listiscore-role="weight"]\' );
 
-			recalc();
-		} )();
-		</script>
-		<?php
+				function recalc() {
+					var sum = 0;
+					for ( var i = 0; i < weights.length; i++ ) {
+						if ( ! enabled[ i ] || enabled[ i ].checked ) {
+							sum += parseInt( weights[ i ].value, 10 ) || 0;
+						}
+					}
+					total.textContent = sum;
+					wrap.style.color = ( 100 === sum ) ? "#0ca30c" : "#d03b3b";
+				}
+
+				for ( var i = 0; i < weights.length; i++ ) {
+					weights[ i ].addEventListener( "input", recalc );
+				}
+				for ( var i = 0; i < enabled.length; i++ ) {
+					enabled[ i ].addEventListener( "change", recalc );
+				}
+
+				recalc();
+			} )();'
+		);
 	}
 
 	/**
-	 * Save the settings fields into the `lhs_settings` option.
+	 * Save the settings fields into the `listiscore_settings` option.
 	 *
 	 * Not routed through `GeoDir_Admin_Settings::save_fields()` because that
 	 * always persists into GD's shared `geodir_settings` option; we need our
@@ -293,7 +295,7 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 
 		$total_weight = 0;
 
-		foreach ( LHS_Criteria::get_defaults() as $id => $criterion ) {
+		foreach ( ListiScore_Criteria::get_defaults() as $id => $criterion ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce ('geodirectory-settings') already verified by GeoDir_Admin_Settings::save() before geodir_settings_save_{id} fires.
 			$enabled = ! empty( $_POST['criteria'][ $id ]['enabled'] );
 
@@ -314,16 +316,17 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 		if ( 100 !== $total_weight ) {
 			global $geodir_settings_error;
 
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- GeoDirectory core's own global, not ours to define; see the docblock above for why we set it.
 			$geodir_settings_error = sprintf(
 				/* translators: %d: the total the admin actually submitted. */
-				__( 'Health Score settings were not saved: enabled criteria must add up to exactly 100%% of the score (currently %d%%). Adjust the weights and save again.', 'listing-health-score' ),
+				__( 'Health Score settings were not saved: enabled criteria must add up to exactly 100%% of the score (currently %d%%). Adjust the weights and save again.', 'listiscore' ),
 				$total_weight
 			);
 
 			return;
 		}
 
-		LHS_Settings::update( $data );
+		ListiScore_Settings::update( $data );
 	}
 
 	/**
@@ -355,4 +358,4 @@ class LHS_Settings_Health_Score extends GeoDir_Settings_Page {
 	}
 }
 
-return new LHS_Settings_Health_Score();
+return new ListiScore_Settings_Health_Score();

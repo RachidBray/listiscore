@@ -5,7 +5,7 @@
  * Not named `*Test.php` on purpose so PHPUnit's directory suffix scan
  * (see phpunit.xml.dist) doesn't try to run this abstract class directly.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 
 /**
- * LHS_TestCase class.
+ * ListiScore_TestCase class.
  */
-abstract class LHS_TestCase extends PHPUnit_TestCase {
+abstract class ListiScore_TestCase extends PHPUnit_TestCase {
 
 	/**
 	 * Boots Brain Monkey's function/hook interception before each test.
@@ -27,8 +27,8 @@ abstract class LHS_TestCase extends PHPUnit_TestCase {
 		Brain\Monkey\setUp();
 
 		// Every criterion label/tip goes through __(), even in tests that
-		// don't care about its output (e.g. LHS_Criteria::get_defaults() is
-		// always built before a test's lhs_criteria filter override replaces it).
+		// don't care about its output (e.g. ListiScore_Criteria::get_defaults() is
+		// always built before a test's listiscore_criteria filter override replaces it).
 		Brain\Monkey\Functions\stubTranslationFunctions();
 	}
 

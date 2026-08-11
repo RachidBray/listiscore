@@ -5,9 +5,9 @@
  * Each criterion returns a fraction 0..1 (how complete it is) plus an
  * optional tip shown to listing owners when the fraction is below 1.
  *
- * Third parties can add/remove/reweight criteria via the `lhs_criteria` filter.
+ * Third parties can add/remove/reweight criteria via the `listiscore_criteria` filter.
  *
- * @package Listing_Health_Score
+ * @package ListiScore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * LHS_Criteria class.
+ * ListiScore_Criteria class.
  */
-class LHS_Criteria {
+class ListiScore_Criteria {
 
 	/**
 	 * Get all registered criteria with saved settings overrides applied.
@@ -29,7 +29,7 @@ class LHS_Criteria {
 	 */
 	public static function get_all() {
 		$criteria  = self::get_defaults();
-		$overrides = LHS_Settings::get( 'criteria', array() );
+		$overrides = ListiScore_Settings::get( 'criteria', array() );
 
 		foreach ( array_keys( $criteria ) as $id ) {
 			if ( empty( $overrides[ $id ] ) ) {
@@ -51,7 +51,7 @@ class LHS_Criteria {
 		 *
 		 * @param array[] $criteria Criteria definitions keyed by id.
 		 */
-		return apply_filters( 'lhs_criteria', $criteria );
+		return apply_filters( 'listiscore_criteria', $criteria );
 	}
 
 	/**
@@ -66,70 +66,70 @@ class LHS_Criteria {
 	public static function get_defaults() {
 		$criteria = array(
 			'featured_image' => array(
-				'label'  => __( 'Featured image', 'listing-health-score' ),
+				'label'  => __( 'Featured image', 'listiscore' ),
 				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_featured_image' ),
-				'tip'    => __( 'Add a featured image to make your listing stand out in search results.', 'listing-health-score' ),
+				'tip'    => __( 'Add a featured image to make your listing stand out in search results.', 'listiscore' ),
 			),
 			'logo'           => array(
-				'label'  => __( 'Logo', 'listing-health-score' ),
+				'label'  => __( 'Logo', 'listiscore' ),
 				'weight' => 5,
 				'check'  => array( __CLASS__, 'check_logo' ),
-				'tip'    => __( 'Upload your business logo for better brand recognition.', 'listing-health-score' ),
+				'tip'    => __( 'Upload your business logo for better brand recognition.', 'listiscore' ),
 			),
 			'description'    => array(
-				'label'  => __( 'Description', 'listing-health-score' ),
+				'label'  => __( 'Description', 'listiscore' ),
 				'weight' => 16,
 				'check'  => array( __CLASS__, 'check_description' ),
-				'tip'    => __( 'Write a detailed description (300+ characters) covering your services, story and what makes you unique.', 'listing-health-score' ),
+				'tip'    => __( 'Write a detailed description (300+ characters) covering your services, story and what makes you unique.', 'listiscore' ),
 			),
 			'business_hours' => array(
-				'label'  => __( 'Opening hours', 'listing-health-score' ),
+				'label'  => __( 'Opening hours', 'listiscore' ),
 				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_business_hours' ),
-				'tip'    => __( 'Add your opening hours so visitors know when you are available.', 'listing-health-score' ),
+				'tip'    => __( 'Add your opening hours so visitors know when you are available.', 'listiscore' ),
 			),
 			'phone'          => array(
-				'label'  => __( 'Phone number', 'listing-health-score' ),
+				'label'  => __( 'Phone number', 'listiscore' ),
 				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_phone' ),
-				'tip'    => __( 'Add a phone number so customers can reach you directly.', 'listing-health-score' ),
+				'tip'    => __( 'Add a phone number so customers can reach you directly.', 'listiscore' ),
 			),
 			'email'          => array(
-				'label'  => __( 'Email address', 'listing-health-score' ),
+				'label'  => __( 'Email address', 'listiscore' ),
 				'weight' => 5,
 				'check'  => array( __CLASS__, 'check_email' ),
-				'tip'    => __( 'Add a contact email address.', 'listing-health-score' ),
+				'tip'    => __( 'Add a contact email address.', 'listiscore' ),
 			),
 			'website'        => array(
-				'label'  => __( 'Website', 'listing-health-score' ),
+				'label'  => __( 'Website', 'listiscore' ),
 				'weight' => 8,
 				'check'  => array( __CLASS__, 'check_website' ),
-				'tip'    => __( 'Link your website to drive traffic and build trust.', 'listing-health-score' ),
+				'tip'    => __( 'Link your website to drive traffic and build trust.', 'listiscore' ),
 			),
 			'social'         => array(
-				'label'  => __( 'Social links', 'listing-health-score' ),
+				'label'  => __( 'Social links', 'listiscore' ),
 				'weight' => 6,
 				'check'  => array( __CLASS__, 'check_social' ),
-				'tip'    => __( 'Connect at least two social profiles (Facebook, Instagram, X, LinkedIn).', 'listing-health-score' ),
+				'tip'    => __( 'Connect at least two social profiles (Facebook, Instagram, X, LinkedIn).', 'listiscore' ),
 			),
 			'photos'         => array(
-				'label'  => __( 'Photo gallery', 'listing-health-score' ),
+				'label'  => __( 'Photo gallery', 'listiscore' ),
 				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_photos' ),
-				'tip'    => __( 'Upload at least 5 photos. Listings with galleries get significantly more engagement.', 'listing-health-score' ),
+				'tip'    => __( 'Upload at least 5 photos. Listings with galleries get significantly more engagement.', 'listiscore' ),
 			),
 			'reviews'        => array(
-				'label'  => __( 'Reviews', 'listing-health-score' ),
+				'label'  => __( 'Reviews', 'listiscore' ),
 				'weight' => 11,
 				'check'  => array( __CLASS__, 'check_reviews' ),
-				'tip'    => __( 'Encourage customers to leave reviews. Aim for at least 3.', 'listing-health-score' ),
+				'tip'    => __( 'Encourage customers to leave reviews. Aim for at least 3.', 'listiscore' ),
 			),
 			'freshness'      => array(
-				'label'  => __( 'Recently updated', 'listing-health-score' ),
+				'label'  => __( 'Recently updated', 'listiscore' ),
 				'weight' => 9,
 				'check'  => array( __CLASS__, 'check_freshness' ),
-				'tip'    => __( 'Update your listing regularly. Fresh listings rank better and build visitor trust.', 'listing-health-score' ),
+				'tip'    => __( 'Update your listing regularly. Fresh listings rank better and build visitor trust.', 'listiscore' ),
 			),
 		);
 
@@ -189,7 +189,7 @@ class LHS_Criteria {
 		 *
 		 * @param int $target Target character count. Default 300.
 		 */
-		$target = (int) apply_filters( 'lhs_description_target_length', 300 );
+		$target = (int) apply_filters( 'listiscore_description_target_length', 300 );
 
 		if ( $length <= 0 ) {
 			return 0.0;
@@ -250,7 +250,7 @@ class LHS_Criteria {
 		 * @param string[] $fields Property names to check on the GD post object.
 		 */
 		$fields = apply_filters(
-			'lhs_social_fields',
+			'listiscore_social_fields',
 			array( 'facebook', 'instagram', 'twitter', 'x', 'linkedin', 'youtube', 'tiktok', 'pinterest' )
 		);
 
@@ -266,7 +266,7 @@ class LHS_Criteria {
 		 *
 		 * @param int $target Target profile count. Default 2.
 		 */
-		$target = (int) apply_filters( 'lhs_social_target_count', 2 );
+		$target = (int) apply_filters( 'listiscore_social_target_count', 2 );
 		return min( 1.0, $found / max( 1, $target ) );
 	}
 
@@ -293,7 +293,7 @@ class LHS_Criteria {
 		 *
 		 * @param int $target Target photo count. Default 5.
 		 */
-		$target = (int) apply_filters( 'lhs_photos_target_count', 5 );
+		$target = (int) apply_filters( 'listiscore_photos_target_count', 5 );
 		return min( 1.0, $count / max( 1, $target ) );
 	}
 
@@ -312,7 +312,7 @@ class LHS_Criteria {
 		 *
 		 * @param int $target Target review count. Default 3.
 		 */
-		$target = (int) apply_filters( 'lhs_reviews_target_count', 3 );
+		$target = (int) apply_filters( 'listiscore_reviews_target_count', 3 );
 		return min( 1.0, $count / max( 1, $target ) );
 	}
 
@@ -335,7 +335,7 @@ class LHS_Criteria {
 		 *
 		 * @param int $max_days Max days before full decay. Default 180.
 		 */
-		$max_days = (int) apply_filters( 'lhs_freshness_max_days', 180 );
+		$max_days = (int) apply_filters( 'listiscore_freshness_max_days', 180 );
 
 		if ( $days_old <= 0 ) {
 			return 1.0;

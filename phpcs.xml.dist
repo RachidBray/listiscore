@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Listing Health Score">
+<ruleset name="ListiScore">
   <file>.</file>
   <exclude-pattern>/vendor/*</exclude-pattern>
   <exclude-pattern>/node_modules/*</exclude-pattern>
@@ -12,21 +12,23 @@
   <rule ref="WordPress.WP.I18n">
     <properties>
       <property name="text_domain" type="array">
-        <element value="listing-health-score"/>
+        <element value="listiscore"/>
       </property>
     </properties>
   </rule>
   <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
     <properties>
       <property name="prefixes" type="array">
-        <element value="lhs"/>
-        <element value="LHS"/>
+        <element value="listiscore"/>
+        <element value="LISTISCORE"/>
+        <element value="ListiScore"/>
       </property>
     </properties>
-    <!-- "lhs"/"LHS" is the plugin's deliberate prefix; it's one character under the
-         sniff's generic 4-char minimum but is otherwise unique within this WordPress
-         install (grepped: no collisions with core or other addons). -->
-    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+    <!-- tests/bootstrap.php and tests/wp-stubs.php intentionally redeclare a
+         handful of real WP/GeoDirectory function and constant names as test
+         doubles (Brain Monkey mocks the rest); that's the point of a stub,
+         not a naming violation. -->
+    <exclude-pattern>*/tests/*</exclude-pattern>
   </rule>
   <rule ref="PHPCompatibilityWP"/>
   <config name="testVersion" value="7.4-"/>
