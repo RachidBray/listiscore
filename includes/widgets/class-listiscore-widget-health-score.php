@@ -100,7 +100,9 @@ class ListiScore_Widget_Health_Score extends WP_Super_Duper {
 	 * @return string
 	 */
 	public function output( $args = array(), $widget_args = array(), $content = '' ) {
-		global $gd_post, $post;
+		// $gd_post/$post are GeoDirectory core's and WordPress core's own
+		// current-listing globals, not ours to define -- we only read them.
+		global $gd_post, $post; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 		$defaults = array(
 			'title'                => '',
@@ -170,7 +172,8 @@ class ListiScore_Widget_Health_Score extends WP_Super_Duper {
 	 * @param string  $title           Optional widget title.
 	 */
 	private function render_aui( $score, $band, $color, $recommendations, $title ) {
-		global $aui_bs5;
+		// AyeCode UI's own Bootstrap-version flag, not ours to define -- we only read it.
+		global $aui_bs5; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 		$me_3        = $aui_bs5 ? 'me-3' : 'mr-3';
 		$remaining   = 100 - $score;

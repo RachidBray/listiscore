@@ -280,8 +280,22 @@ class ListiScore_Settings_Health_Score extends GeoDir_Settings_Page {
 	 * would otherwise occupy — and, critically, *skips* that success message
 	 * entirely. Without this, GD has no way to know our save rejected
 	 * anything and tells the admin it saved regardless.
+	 *
+	 * Nonce + capability: this method only ever runs via the
+	 * `geodir_settings_save_{$this->id}` action, which `GeoDir_Admin_Settings`
+	 * fires from `output()` -- itself only reachable through the `gd-settings`
+	 * submenu page, which WP core already gates on
+	 * `admin_menu_capability( 'gd-settings' )` (`manage_options` by default)
+	 * before `output()` ever runs. `GeoDir_Admin_Settings::save()` then
+	 * verifies the `geodirectory-settings` nonce itself and `die()`s before
+	 * this action fires at all. The explicit check below is deliberate
+	 * defense-in-depth on top of that, not a substitute for it.
 	 */
 	public function save() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$data = array(
 			'band_good'                 => $this->posted_int( 'band_good', 80, 0, 100 ),
 			'band_ok'                   => $this->posted_int( 'band_ok', 50, 0, 100 ),
