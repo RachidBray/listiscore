@@ -14,7 +14,7 @@ Scores every GeoDirectory listing 0-100 based on completeness and quality, with 
 
 ListiScore adds a gamified completeness score to every listing in your [GeoDirectory](https://wpgeodirectory.com/) directory. Admins get an at-a-glance view of which listings need attention; listing owners get a clear, prioritized checklist of what to fix next for the biggest score gain.
 
-Source code and development happen in the open on [GitHub](https://github.com/RachidBray/listing-health-score).
+Source code and development happen in the open on [GitHub](https://github.com/RachidBray/listiscore).
 
 = Features =
 
@@ -24,7 +24,7 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 * **Owner-facing widget / shortcode / block**: `[listiscore_health]` (also available as a widget and a Gutenberg block) shows a "complete your listing" checklist: percent-complete progress bar and a recommendations list sorted by potential score percentage gain, so owners know exactly what to fix first. Visible only to the listing owner and site admins.
 * **Settings tab inside GeoDirectory's own settings UI**: enable or disable individual criteria, reweight them, and tune scaling targets (description length, photo/review/social counts, freshness decay window) and the score-band thresholds, all without touching code.
 * **Automatic recalculation**: scores update when a listing is saved, when reviews are added or change status, and via a daily batched cron job so freshness decay stays accurate even without new activity. Changing settings automatically invalidates and lazily recalculates affected scores.
-* **Developer-friendly**: every scaling target, threshold, and the criteria list itself are filterable; a `lhs_score_updated` action fires whenever a score changes.
+* **Developer-friendly**: every scaling target, threshold, and the criteria list itself are filterable; a `listiscore_score_updated` action fires whenever a score changes.
 * **Free, no upsells**: the full feature set is free. No premium tier, no license key, no nags.
 
 = Requirements =
@@ -34,7 +34,7 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 == Installation ==
 
 1. Make sure [GeoDirectory](https://wordpress.org/plugins/geodirectory/) is installed and active first.
-2. Upload the `listing-health-score` folder to `/wp-content/plugins/`, or install it through the WordPress admin's Plugins > Add New screen.
+2. Upload the `listiscore` folder to `/wp-content/plugins/`, or install it through the WordPress admin's Plugins > Add New screen.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
 4. Visit GeoDirectory > Settings > Health Score to adjust criteria, weights, and targets if you don't want the defaults.
 5. Add the `[listiscore_health]` shortcode, the "ListiScore" widget, or its Gutenberg block to your single listing template so owners can see their score and recommendations.

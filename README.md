@@ -1,7 +1,7 @@
 # ListiScore - Listing Health Score for GeoDirectory
 
-![CI](https://github.com/RachidBray/listing-health-score/actions/workflows/ci.yml/badge.svg)
-[![Latest release](https://img.shields.io/github/v/release/RachidBray/listing-health-score)](https://github.com/RachidBray/listing-health-score/releases/latest)
+![CI](https://github.com/RachidBray/listiscore/actions/workflows/ci.yml/badge.svg)
+[![Latest release](https://img.shields.io/github/v/release/RachidBray/listiscore)](https://github.com/RachidBray/listiscore/releases/latest)
 
 A free WordPress addon for [GeoDirectory](https://wpgeodirectory.com/?ref=200/) that scores every listing 0-100 based on completeness and quality (a featured image, a real description, contact details, photos, reviews, and more), then shows owners exactly what to fix next for the biggest score gain.
 
