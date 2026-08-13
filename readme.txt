@@ -33,11 +33,11 @@ Source code and development happen in the open on [GitHub](https://github.com/Ra
 
 == Installation ==
 
-1. Make sure [GeoDirectory](https://wordpress.org/plugins/geodirectory/) is installed and active first.
-2. Upload the `listiscore` folder to `/wp-content/plugins/`, or install it through the WordPress admin's Plugins > Add New screen.
-3. Activate the plugin through the 'Plugins' menu in WordPress.
-4. Visit GeoDirectory > Settings > Health Score to adjust criteria, weights, and targets if you don't want the defaults.
-5. Add the `[listiscore_health]` shortcode, the "ListiScore" widget, or its Gutenberg block to your single listing template so owners can see their score and recommendations.
+1. Make sure [GeoDirectory](https://wordpress.org/plugins/geodirectory/) is installed and activated.
+2. In your WordPress dashboard, go to 'Plugins' > 'Add Plugin', search for ListiScore, and install it from the WordPress.org plugin directory. Alternatively, you can download the plugin from WordPress.org and install it manually.
+3. Activate ListiScore through the Plugins menu in WordPress.
+4. Go to 'GeoDirectory' > 'Settings' > 'Health Score' to review and adjust the scoring criteria, weights, and targets. The plugin works with the default settings out of the box.
+5. Add the ListiScore widget, Gutenberg block, or [listiscore_health] shortcode to your single listing template or listing page to display the health score and recommendations to listing owners.
 
 == Frequently Asked Questions ==
 
