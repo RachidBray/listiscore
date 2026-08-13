@@ -63,7 +63,8 @@ No. ListiScore is a GeoDirectory addon and requires GeoDirectory to be installed
 
 == Screenshots ==
 
-1. The Health Score settings tab, and the owner-facing widget showing a listing's score both in progress and fully complete.
+1. Owner facing widget showing a listing's score both in progress and fully complete.
+2. The Health Score settings tab
 
 == Changelog ==
 
